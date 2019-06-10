@@ -30,18 +30,18 @@ userSchema.pre('save', function (next) {
     });  
 });
 
-userSchema.pre("save",function(next) {
-    var self = this;
-    mongoose.models["users"].findOne({email : self.email},function(err, results) {
-        if(err) {
-            next(err);
-        } else if(results) { //there was a result found, so the email address exists
-            self.invalidate("email","email must be unique");
-            return next(new Error("email must be unique"));
-        } else {
-            next();
-        }
-    });
-    next();
-});
+// userSchema.pre("save",function(next) {
+//     var self = this;
+//     mongoose.models["users"].findOne({email : self.email},function(err, results) {
+//         if(err) {
+//             next(err);
+//         } else if(results) { //there was a result found, so the email address exists
+//             self.invalidate("email","email must be unique");
+//             return next(new Error("email must be unique"));
+//         } else {
+//             next();
+//         }
+//     });
+//     next();
+// });
 module.exports = mongoose.model("users",userSchema) ;

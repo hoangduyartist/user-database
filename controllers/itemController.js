@@ -16,7 +16,7 @@ function createNew(req, res) {
     })
     itemService.create(newItem)
         .then(data => {
-            if (newItem.save()) {
+            if (data) {
                 return res.status(200).send(newItem);
                 // return ({newItem: newItem1})
             }

@@ -2,11 +2,12 @@ var bcrypt = require('bcrypt');
 var mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    fullname: {
+    username: {
         type: String,
-        required: true
+        required: true,
+        // unique: true
     },
-    name: {
+    email: {
         type: String,
         required: true,
         // unique: true
@@ -16,20 +17,8 @@ const userSchema = new mongoose.Schema({
         required: true,
         // minlength : [4, 'at least 4 char']
     },
-    avatar: {type:String, required:true, default:'images/ava-default.jpg'},
-    age: {
-        type: Number,
-        //required: true
-        //default: 20
-    },
-    contacts : [],
-    friends : Array
 });
 
-// setter
-// userSchema.path('name').set(inputString =>{
-//     return inputString[0].toUpperCase()+inputString.slice(1);
-// });
 userSchema.pre('save', function (next) {
     var user = this;
     bcrypt.hash(user.password, 10, function (err, hash) {

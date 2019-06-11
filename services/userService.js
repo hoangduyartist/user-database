@@ -10,6 +10,7 @@ module.exports = {
 };
 
 async function create(userParams) {
+  
     // validate
     if (await User.findOne({ username: userParams.username, email: userParams.email })) {
         return ({status: "error", message: 'Username or email is already taken' })

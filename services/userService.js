@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-LocalStorage = require('node-localstorage').LocalStorage;
-LocalStorage = new LocalStorage('./scratch');
+// LocalStorage = require('node-localstorage').LocalStorage;
+// LocalStorage = new LocalStorage('./scratch');
 // localStorage = require("localStorage");
 
 const User = require('../models/user');
@@ -13,6 +13,7 @@ module.exports = {
 };
 
 async function create(userParams) {
+  
     // validate
 
     const userValidate = await User.findOne({ username: userParams.username });
@@ -42,12 +43,11 @@ async function create(userParams) {
 async function authenticate({ username, password }) {
     const user = await User.findOne({ username: username })
     if (!user)
-        return ({ msg: 'user-name is incorrect!' })
+        return ({status: "error", message: 'user-name is incorrect!' })
 
     if (user && bcrypt.compareSync(password, user.password)) {
         const token = jwt.sign({ id: user._id }, 'secret12345', { expiresIn: '1h' });
         // LocalStorage.setItem("token", JSON.stringify(token));
-        console.log(token);
         return { status: "success", message: "user found!", data: { user: user, token: token } }
     }
     else {

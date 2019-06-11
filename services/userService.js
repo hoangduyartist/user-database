@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+LocalStorage = require('node-localstorage').LocalStorage;
+LocalStorage = new LocalStorage('./scratch');
+// localStorage = require("localStorage");
 
 const User = require('../models/user');
 
@@ -11,7 +14,13 @@ module.exports = {
 
 async function create(userParams) {
     // validate
-    if (await User.findOne({ username: userParams.username, email: userParams.email })) {
+    const userValidate = await User.findOne({ username: userParams.username });
+    
+    if (userValidate) {
+        return ({status: "error", message: 'Username or email is already taken' })
+    }
+    if (!userValidate){
+        if(await User.findOne({ email: userParams.email }))
         return ({status: "error", message: 'Username or email is already taken' })
     }
 
@@ -36,6 +45,8 @@ async function authenticate({ username, password }) {
 
     if (user && bcrypt.compareSync(password, user.password)) {
         const token = jwt.sign({ id: user._id }, 'secret12345', { expiresIn: '1h' });
+        // LocalStorage.setItem("token", JSON.stringify(token));
+        console.log(token);
         return { status: "success", message: "user found!", data: { user: user, token: token } }
     }
     else {

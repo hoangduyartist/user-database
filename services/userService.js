@@ -14,6 +14,7 @@ module.exports = {
 
 async function create(userParams) {
     // validate
+
     const userValidate = await User.findOne({ username: userParams.username });
     
     if (userValidate) {

@@ -5,7 +5,8 @@ let userService = require('./../services/userService');
 
 module.exports = {
     authenticate,
-    createNew
+    createNew,
+    active
     // update
 };
 
@@ -33,6 +34,16 @@ function authenticate(req, res) {
     userService.authenticate({ username, password })
         .then(data => {
             res.json(data);
+        })
+        .catch(err => console.log(err));
+}
+
+function active(req, res) {
+    let userID = req.params.userID;
+    console.log(userID);
+    userService.activeAccount({ userID })
+        .then(data => {
+            res.status(200).send(data);
         })
         .catch(err => console.log(err));
 }

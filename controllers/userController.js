@@ -40,3 +40,7 @@ function authenticate(req, res) {
 function updateVerifyProp(isVerified){
     
 }
+
+function confirmationEmail(req, res){
+
+}

@@ -87,6 +87,6 @@ async function create(userParams) {
         return ({ status: "success", newuser: newuser, message: "Register successful!", todo: `Email sent to ${newuser.email}. Check email to acive your account.` })
     }
     return ({ status: "error", message: "Register failed" })
-//})
+
     
 }

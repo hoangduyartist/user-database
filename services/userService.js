@@ -7,11 +7,14 @@ const crypto = require('crypto');
 // localStorage = require("localStorage");
 
 const User = require('../models/user');
-const Token = require('../models/verifyToken');
+
+
+
 module.exports = {
     authenticate,
-    create
-
+    create,
+    activeAccount,
+    reSendEmail
 };
 
 async function authenticate({ username, password }) {
@@ -31,9 +34,35 @@ async function authenticate({ username, password }) {
     }
 }
 
+function sendVerifyEmail(newuser){
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'userservicetraining2019@gmail.com',
+            pass: 'userservice'
+        }
+    });
+
+    let mailOptions = {
+
+        from: 'userservicetraining2019@gmail.com',
+        to: newuser.email,
+        subject: 'Global Traning - Verify email',
+        text: `Hi there, please verify email to active your account. Click link below\nhttp:\/\/localhost:3000\/web-api\/confirmation\/verify-email.${newuser._id}\n`
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+}
+
 async function create(userParams) {
 
-    // validate
+    // validate unique user and email
     const userValidate = await User.findOne({ username: userParams.username });
 
     if (userValidate) {
@@ -53,40 +82,28 @@ async function create(userParams) {
     });
 
     const newuser = await user.save();
-   const token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
     
     if (newuser) {
         // token.save(function (err) {
         //     if (err) { return res.status(500).send({ msg: err.message }); }
-        var transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'userservicetraining2019@gmail.com',
-                pass: 'userservice'
-            }
-        });
-
-        var mailOptions = {
-
-            from: 'userservicetraining2019@gmail.com',
-            to: newuser.email,
-            subject: 'Global Traning - Verify email',
-            text: `Hi there, please verify email to active your account. Click link below\nhttp:\/\/localhost:3000\/confirmation\/verify-email.${newuser._id}\n`
-                   
-        };
-
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Email sent: ' + info.response);
-            }
-        });
+        //send email
+        sendVerifyEmail(newuser);
         //end-send-email
 
         return ({ status: "success", newuser: newuser, message: "Register successful!", todo: `Email sent to ${newuser.email}. Check email to acive your account.` })
     }
     return ({ status: "error", message: "Register failed" })
+}
+function reSendEmail(user){
+    sendVerifyEmail(user)
+}
 
-    
+async function activeAccount({userID}){
+    //console.log(userID);
+    const activeAcc = await User.findByIdAndUpdate(userID,{isVerified:true});
+    if(activeAcc)
+    return ({ status: "success", message: "Your account is activated." })
+
+    return ({ status: "error", message: "error occured !" })
+
 }

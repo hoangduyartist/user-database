@@ -5,7 +5,8 @@ let userService = require('./../services/userService');
 
 module.exports = {
     authenticate,
-    createNew
+    createNew,
+    active
     // update
 };
 
@@ -37,10 +38,12 @@ function authenticate(req, res) {
         .catch(err => console.log(err));
 }
 
-function updateVerifyProp(isVerified){
-    
-}
-
-function confirmationEmail(req, res){
-
+function active(req, res) {
+    let userID = req.params.userID;
+    console.log(userID);
+    userService.activeAccount({ userID })
+        .then(data => {
+            res.status(200).send(data);
+        })
+        .catch(err => console.log(err));
 }

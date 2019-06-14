@@ -49,8 +49,7 @@ async function create(userParams) {
             from: 'userservicetraining2019@gmail.com',
             to: newuser.email,
             subject: 'Global Traning - Verify email',
-            text: `Hi there, please verify email to active your account. Click link below`
-            //html: `<h3 style="font-family:segoe ui light"><a href="http://localhost:3000/web-api/new-user/verify-email.${newuser._id}"></a></h3>`        
+     
         };
 
         transporter.sendMail(mailOptions, function (error, info) {
@@ -74,8 +73,8 @@ async function authenticate({ username, password }) {
         return ({ status: "error", message: 'user-name is incorrect!' })
 
     if (user && bcrypt.compareSync(password, user.password)) {
-        if(user.isVerified == false )
-        return {status: "error", message: "your account hasn't been activated."}
+        if (user.isVerified == false)
+            return { status: "error", message: "your account hasn't been activated." }
 
         const token = jwt.sign({ id: user._id }, 'secret12345', { expiresIn: '1h' });
         // LocalStorage.setItem("token", JSON.stringify(token));

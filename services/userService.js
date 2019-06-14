@@ -99,7 +99,11 @@ function reSendEmail(user){
 }
 
 async function activeAccount({userID}){
-    //console.log(userID);
+    const user = await User.findById(userID);
+    if(user){
+        if(user.isVerified == true)
+        return ({ status: "success", message: "Your account is already activated." })
+    }
     const activeAcc = await User.findByIdAndUpdate(userID,{isVerified:true});
     if(activeAcc)
     return ({ status: "success", message: "Your account is activated." })

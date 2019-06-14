@@ -40,7 +40,7 @@ function authenticate(req, res) {
 
 function active(req, res) {
     let userID = req.params.userID;
-    console.log(userID);
+
     userService.activeAccount({ userID })
         .then(data => {
             res.status(200).send(data);

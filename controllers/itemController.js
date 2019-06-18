@@ -4,7 +4,8 @@ let itemService = require('./../services/itemService');
 
 module.exports = {
     // authenticate,
-    createNew
+    createNew,
+    fetchTest
     // update
 };
 
@@ -19,6 +20,17 @@ function createNew(req, res) {
             if (data) {
                 return res.status(200).send(newItem);
                 // return ({newItem: newItem1})
+            }
+            return res.status(500).send({ msg: "error" });
+        })
+        .catch(err => console.log(err));
+}
+function fetchTest(req, res) {
+
+    itemService.fetchTest()
+        .then(data => {
+            if (data) {
+                return res.status(200).send(data);
             }
             return res.status(500).send({ msg: "error" });
         })

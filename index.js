@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const webAPI = require("./routers/webAPI");
 
+//app.use(bodyParser.raw({ inflate: true, limit: '100kb', type: 'application/octet-stream' }));
+app.use(express.static("public")); //auto access /public in client
 app.use(bodyParser.json()); //using bodypaser as middleWave
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/web-api',webAPI);

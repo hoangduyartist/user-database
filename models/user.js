@@ -21,11 +21,21 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: false
     },
+    isKYCVerified: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
     password: {
         type: String,
         required: true,
         // minlength : [4, 'at least 4 char']
     },
+    role: {
+        type: String,
+        required: true,
+        default: "user"
+    }
 });
 
 userSchema.pre('save', function (next) {

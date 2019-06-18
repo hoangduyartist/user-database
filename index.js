@@ -12,8 +12,12 @@ app.use('/web-api',webAPI);
 app.get('/hello',(req,res)=>{
     res.send("hello");
 })
+app.get('/',(req,res)=>{
+    
+    res.send("This is ubuntu server.");
+})
 
-let PORT = process.env.PORT || 3000;
+let PORT = process.env.PORT || 81;
 server.listen(PORT, ()=>{
     console.log("serverlisten on port "+PORT);
 });

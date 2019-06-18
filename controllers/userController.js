@@ -29,6 +29,7 @@ function createNew(req, res) {
 }
 
 function authenticate(req, res) {
+    console.log(req.body);
     let username = req.body.username,
         password = req.body.password;
     userService.authenticate({ username, password })

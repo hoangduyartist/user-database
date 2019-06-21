@@ -28,7 +28,7 @@ async function authenticate({ username, password }) {
         return { statusCode: 1, message: "user found!", data: { user: user, token: token } }
     }
     else {
-        return { statusCode: 0, message: "Invalid email/password!", data: null };
+        return { statusCode: 0, message: "Password is incorrect !", data: null };
     }
 }
 
@@ -87,9 +87,9 @@ async function create(userParams) {
         sendVerifyEmail(newuser);
         //end-send-email
 
-        return ({ statusCode: 1, newuser: newuser, message: "Register successful!", todo: {verifyEmail:`Email sent to ${newuser.email}. Check email to active your account.`} })
+        return ({ statusCode: 1, newuser: newuser, message: "Register successful !", todo: {verifyEmail:`Email sent to ${newuser.email}. Check email to active your account.`} })
     }
-    return ({ statusCode: 0, message: "Register failed" })
+    return ({ statusCode: 0, message: "Register failed !" })
 
 }
 function reSendEmail(user){

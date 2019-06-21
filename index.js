@@ -13,9 +13,7 @@ app.set("views", "./views");
 app.use(bodyParser.json()); //using bodypaser as middleWave
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/web-api',webAPI);
-app.get('/hello',(req,res)=>{
-    res.send("hello");
-})
+
 app.get('/',async (req,res)=>{
 
     const requestItem = require('./models/requestItem');

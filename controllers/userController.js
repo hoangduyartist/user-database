@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 let path = require("path");
 let multer = require("multer");
 
-let User = require('../models/user');
 let userService = require('./../services/userService');
 
 
@@ -10,6 +9,7 @@ module.exports = {
     authenticate,
     createNew,
     active,
+    reactive,
     KYCVerify
     // update
 };
@@ -75,7 +75,7 @@ function authenticate(req, res) {
         password = req.body.password;
     userService.authenticate({ username, password })
         .then(data => {
-            res.json(data);
+            return res.json(data);
         })
         .catch(err => console.log(err));
 }
@@ -85,9 +85,15 @@ function active(req, res) {
 
     userService.activeAccount({ userID })
         .then(data => {
-            res.status(200).send(data);
+            return res.status(200).send(data);
         })
         .catch(err => console.log(err));
+}
+function reactive(req, res) {
+
+    userService.reSendEmail()
+    return res.status(202).send("Email resent !");
+
 }
 
 function KYCVerify(req, res) {

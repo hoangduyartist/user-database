@@ -7,6 +7,7 @@ const crypto = require('crypto');
 // localStorage = require("localStorage");
 
 const User = require('../models/user');
+let userInfo = '';
 
 module.exports = {
     authenticate,
@@ -24,6 +25,7 @@ async function authenticate({ username, password }) {
         if(user.isVerified == false )
         return {statusCode: 0, message: "your account hasn't been activated."}
         const token = jwt.sign({ id: user._id }, 'secret12345', { expiresIn: '1h' });
+        userInfo = user;
         // LocalStorage.setItem("token", JSON.stringify(token));
         return { statusCode: 1, message: "user found!", data: { user: user, token: token } }
     }
@@ -85,6 +87,7 @@ async function create(userParams) {
         //     if (err) { return res.status(500).send({ msg: err.message }); }
         //send email
         sendVerifyEmail(newuser);
+        userInfo = newuser;
         //end-send-email
 
         return ({ statusCode: 1, newuser: newuser, message: "Register successful !", todo: {verifyEmail:`Email sent to ${newuser.email}. Check email to active your account.`} })
@@ -92,8 +95,9 @@ async function create(userParams) {
     return ({ statusCode: 0, message: "Register failed !" })
 
 }
-function reSendEmail(user){
-    sendVerifyEmail(user)
+function reSendEmail(){
+    
+    sendVerifyEmail(userInfo);
 }
 
 async function activeAccount({userID}){

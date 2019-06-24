@@ -7,6 +7,7 @@ const crypto = require('crypto');
 // localStorage = require("localStorage");
 
 const User = require('../models/user');
+let config = require('./../config');
 let userInfo = '';
 
 module.exports = {
@@ -24,7 +25,7 @@ async function authenticate({ username, password }) {
     if (user && bcrypt.compareSync(password, user.password)) {
         if(user.isVerified == false )
         return {statusCode: 0, message: "your account hasn't been activated."}
-        const token = jwt.sign({ id: user._id }, 'secret12345', { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, config.secretString, { expiresIn: '20s' });
         userInfo = user;
         // LocalStorage.setItem("token", JSON.stringify(token));
         return { statusCode: 1, message: "user found!", data: { user: user, token: token } }

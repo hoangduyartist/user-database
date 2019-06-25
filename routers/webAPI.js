@@ -32,8 +32,8 @@ async function checkToken(req,res,next){
 router.post('/new', userController.createNew);
 router.post('/login',userController.authenticate);
 router.get('/confirmation/verify-email.:userID',userController.active);
-router.get('/confirmation/verify-email/resend-email',checkToken,userController.reactive)
-router.post('/KYC-upload-img',userController.KYCVerify);
+router.get('/confirmation/verify-email/resend-email',userController.reactive)
+router.post('/KYC-upload-img',checkToken,userController.KYCVerify);
 router.get('/test',itemController.fetchTest);
 router.get('/mainpagetest',checkToken,itemController.protectRouter);
 

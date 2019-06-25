@@ -23,9 +23,12 @@ async function authenticate({ username, password }) {
         return ({ statusCode: 0, message: 'user-name is incorrect!' })
 
     if (user && bcrypt.compareSync(password, user.password)) {
-        if(user.isVerified == false )
-        return {statusCode: 0, message: "your account hasn't been activated."}
-        const token = jwt.sign({ id: user._id }, config.secretString, { expiresIn: '20s' });
+        if(user.isVerified == false ){
+            userInfo = user;
+            return {statusCode: 0, message: "your account hasn't been activated."}
+        }
+        
+        const token = jwt.sign({ userID: user._id }, config.secretString, { expiresIn: '30s' });
         userInfo = user;
         // LocalStorage.setItem("token", JSON.stringify(token));
         return { statusCode: 1, message: "user found!", data: { user: user, token: token } }
@@ -33,32 +36,6 @@ async function authenticate({ username, password }) {
     else {
         return { statusCode: 0, message: "Password is incorrect !", data: null };
     }
-}
-
-function sendVerifyEmail(newuser){
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'userservicetraining2019@gmail.com',
-            pass: 'userservice'
-        }
-    });
-
-    let mailOptions = {
-
-        from: 'userservicetraining2019@gmail.com',
-        to: newuser.email,
-        subject: 'Global Traning - Verify email',
-        text: `Hi there, please verify email to active your account. Click link below\nhttp:\/\/localhost:81\/web-api\/confirmation\/verify-email.${newuser._id}\n`
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
 }
 
 async function create(userParams) {
@@ -87,7 +64,8 @@ async function create(userParams) {
         // token.save(function (err) {
         //     if (err) { return res.status(500).send({ msg: err.message }); }
         //send email
-        sendVerifyEmail(newuser);
+        let content = `Hi there, please verify email to active your account. Click link below\nhttp:\/\/localhost:81\/web-api\/confirmation\/verify-email.${newuser._id}\n`;
+        config.sendEmail(newuser, content);
         userInfo = newuser;
         //end-send-email
 
@@ -97,8 +75,9 @@ async function create(userParams) {
 
 }
 function reSendEmail(){
-    
-    sendVerifyEmail(userInfo);
+    let content = `Hi there, please verify email to active your account. Click link below\nhttp:\/\/localhost:81\/web-api\/confirmation\/verify-email.${userInfo._id}\n`;
+    config.sendEmail(userInfo,content);
+    // sendVerifyEmail(userInfo);
 }
 
 async function activeAccount({userID}){
@@ -111,5 +90,5 @@ async function activeAccount({userID}){
     if(activeAcc)
     return ({ statusCode: 1, message: "Your account is activated." })
 
-    return ({ statusCode: 0, message: "error occured !" })
+    return ({ statusCode: 0, message: "error occurred !" })
 }

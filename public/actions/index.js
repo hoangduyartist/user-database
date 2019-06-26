@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    
+    $('#btn-scroll-top').hide();
 
     $('#api-section #copyUrlBtn').click(function () {
         let $url = $(this).siblings('strong');

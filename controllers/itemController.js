@@ -5,7 +5,8 @@ let itemService = require('./../services/itemService');
 module.exports = {
     // authenticate,
     createNew,
-    fetchTest
+    fetchTest,
+    protectRouter
     // update
 };
 
@@ -35,4 +36,15 @@ function fetchTest(req, res) {
             return res.status(500).send({ msg: "error" });
         })
         .catch(err => console.log(err));
+}
+async function protectRouter(req, res) {
+    //const jwt = require("jsonwebtoken");
+    // const jwtVerify = await jwt.verify(req.token, 'secret12345');
+    // if(jwtVerify) return res.json(jwtVerify);
+    // return {message: 'Token is not valid or expired'}
+    if (typeof req.decoded != 'undefined'){
+        return res.send({text:"protected router !", data:req.decoded })
+    }
+    return res.send({statusCode:0, message: 'Error occurred !'});
+
 }

@@ -22,6 +22,7 @@ const reqItemSchema = new mongoose.Schema({
         required: true,
         // minlength : [4, 'at least 4 char']
     },
+    notice: {type: String},
     return : []
 
 });

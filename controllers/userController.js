@@ -4,7 +4,6 @@ let multer = require("multer");
 
 let userService = require('./../services/userService');
 
-
 module.exports = {
     authenticate,
     createNew,
@@ -31,7 +30,7 @@ const upload = multer({
     fileFilter: function (req, file, cb) {
         checkFileType(file, cb);
     }
-}).single('myImage'); //name of input on client
+}).fields([{name:"myImage", maxCount:2}]); //name of input on client
 //functions
 
 // Check File Type
@@ -40,17 +39,18 @@ function checkFileType(file, cb) {
     const filetypes = /jpeg|jpg|png|gif/;
     // Check ext
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    // Check mime
     const mimetype = filetypes.test(file.mimetype);
 
-    if (mimetype && extname) {
+    if (mimetype || extname) {
         return cb(null, true);
     } else {
         return cb('Error: Images Only!');
     }
 }
-let images = [];
 //end functions
+
+
+let images = [];
 
 
 function createNew(req, res) {
@@ -99,43 +99,32 @@ function reactive(req, res) {
 }
 
 function KYCVerify(req, res) {
+
     upload(req, res, (err) => {
         // console.log(path);
+        //console.log(req.files);
         if (err) {
             return res.status(406).send(err);
         } else {
-            if (req.file == undefined) {
+
+            if (req.files == undefined) {
                 res.status(404).send({statusCode:0, messge: 'Error: No File Selected!'});
             } else {
-                console.log(req.file);
                 //UI
-                let mongoose = require("mongoose");
-                let imgUI = {
+                // let mongoose = require("mongoose");
+                // let imgUI = {
 
-                    _id: mongoose.Types.ObjectId(),
-                    path: `uploads/${req.file.filename}`,
-                    name: req.file.filename,
-                    description: req.body.description
-                }
-                images.push(imgUI);
-                return res.send(images);
+                //     _id: mongoose.Types.ObjectId(),
+                //     path: `uploads/${req.file.filename}`,
+                //     name: req.file.filename,
+                //     description: req.body.description
+                // }
+                // images.push(imgUI);
+                // if(req.files.length<3)
+                // return res.status(406).send({statusCode:0, message: "Not enough images !"});
+                return res.status(200).send({statusCode:1, message:"KYC upload image successful !",data:req.files});
                 //end UI
 
-                //insert in database
-                // const user = require('./models/user');
-                // let mUser = new user();
-                // mUser.fullname=req.body.fullname;
-                // mUser.name=req.body.name;
-                // mUser.password=req.body.password;
-                // mUser.save((e, rs)=>{
-                //     if(!e)
-                //     //  res.send(rs);
-                //     res.render('authenticate', {err: '', isReg:true, regSuccess:true });
-                //     else{
-                //         console.log(e.message);
-                //         res.render('authenticate', {err: e, isReg:true, regSuccess:false });
-                //     } 
-                // });
             }
         }
     });

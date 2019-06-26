@@ -28,7 +28,7 @@ async function authenticate({ username, password }) {
         userInfo = user;
         // LocalStorage.setItem("token", JSON.stringify(token));
         //return { statusCode: 1, message: "user found!", data: { user: user, token: token } }
-        return { statusCode: 1, message: "user found!", data: { user: user, token: token } }
+        return { statusCode: 1, message: "Successfully logged in!", data: { user: user, token: token } }
     }
     else {
         return { statusCode: 0, message: "Username or password is not correct!", data: null };

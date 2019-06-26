@@ -18,21 +18,23 @@ module.exports = {
 async function authenticate({ username, password }) {
     const user = await User.findOne({ username })
     if (!user)
-        return ({ statusCode: 0, message: 'user-name is incorrect!' })
+        return ({ statusCode: 0, message: 'Username is not correct!' })
 
     if (user && bcrypt.compareSync(password, user.password)) {
-        if (user.isVerified == false) {
+
+        if(user.isVerified == false ){
             userInfo = user;
             return { statusCode: 0, message: "your account hasn't been activated." }
         }
-
+        
         const token = jwt.sign({ userID: user._id }, config.secretString, { expiresIn: '1d' });
         userInfo = user;
+        //return { statusCode: 1, message: "user found!", data: { user: user, token: token } }
+        return { statusCode: 1, message: "Successfully logged in!", data: { user: user, token: token } }
 
-        return { statusCode: 1, message: "user found!", data: { user: user, token: token } }
     }
     else {
-        return { statusCode: 0, message: "Password is incorrect !", data: null };
+        return { statusCode: 0, message: "Password is not correct!", data: null };
     }
 }
 
@@ -47,6 +49,7 @@ async function create(userParams) {
     if (!userValidate) {
         if (await User.findOne({ email: userParams.email }))
             return ({ statusCode: 0, message: 'Email is already taken' })
+        return ({ statusCode: 0, message: 'Username or email is already taken'})
     }
 
     const user = new User({
@@ -60,17 +63,19 @@ async function create(userParams) {
 
     if (newuser) {
         //send email
-        let content = `Hi there, please verify email to active your account. Click link below\nhttp:\/\/localhost:81\/web-api\/confirmation\/verify-email.${newuser._id}\n`;
+        let content = `Hi there, please verify email to active your account. Click link below\nhttp:\/\/142.93.253.93:81\/web-api\/confirmation\/verify-email.${newuser._id}\n`;
         config.sendEmail(newuser, content);
         userInfo = newuser;
         //end-send-email
-        return ({ statusCode: 1, newuser: newuser, message: "Register successful !", todo: { verifyEmail: `Email sent to ${newuser.email}. Check email to active your account.` } })
+
+        return ({ statusCode: 1, newuser: newuser, message: "Register successful !", todo: {verifyEmail:`An email has been sent to address ${newuser.email}. Please check email to activate your account.`} })
     }
+
     return ({ statusCode: 0, message: "Register failed !" })
 
 }
 function reSendEmail() {
-    let content = `Hi there, please verify email to active your account. Click link below\nhttp:\/\/localhost:81\/web-api\/confirmation\/verify-email.${userInfo._id}\n`;
+    let content = `Hi there, please verify email to active your account. Click link below\nhttp:\/\/142.93.253.93:81\/web-api\/confirmation\/verify-email.${userInfo._id}\n`;
     config.sendEmail(userInfo, content);
 }
 
@@ -84,7 +89,9 @@ async function activeAccount({ userID }) {
     if (activeAcc)
         return ({ statusCode: 1, message: "Your account is activated." })
 
+
     return ({ statusCode: 0, message: "error occurred !" })
+
 }
 //forgot pass
 let emailToChangePass = '';
@@ -126,8 +133,6 @@ async function setNewPass(code, newPass) {
 
         })
     })
-
-
 
 }
  //end forgot pass

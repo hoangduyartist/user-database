@@ -17,6 +17,7 @@ module.exports = {
     // update
 };
 
+
 //upload image
 //save path
 const storage = multer.diskStorage({
@@ -52,8 +53,10 @@ function checkFileType(file, cb) {
 }
 //end functions
 
+
 let images = [];
 let email = '';
+
 
 function createNew(req, res) {
     let newUser = {

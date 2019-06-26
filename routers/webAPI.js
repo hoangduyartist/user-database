@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 const jwt = require("jsonwebtoken");
 
 let userController = require('./../controllers/userController');
@@ -35,6 +36,7 @@ router.post('/login',userController.authenticate);
 router.post('/forgotpassword',userController.getCode);
 router.post('/forgotpassword.newpassword',userController.setNewPass);
 router.get('/confirmation/verify-email.:userID',userController.active);
+
 router.get('/confirmation/verify-email/resend-email',userController.reactive)
 router.post('/KYC-upload-img',checkToken,userController.KYCVerify);
 router.get('/test',itemController.fetchTest);

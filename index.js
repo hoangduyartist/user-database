@@ -11,20 +11,20 @@ app.use(express.static("public")); //auto access /public in client
 app.set("view engine", "ejs");
 app.set("views", "./views");
 app.use(bodyParser.json()); //using bodypaser as middleWave
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/web-api',webAPI);
 
-app.get('/',async (req,res)=>{
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/web-api', webAPI);
+
+app.get('/', async (req, res) => {
 
     const requestItem = require('./models/requestItem');
-    const reqItem = await requestItem.find({}); 
+    const reqItem = await requestItem.find({});
 
-    if(reqItem){
+    if (reqItem) {
         //console.log(reqItem);
-        return res.render("index",{reqItem});
+        return res.render("index", { reqItem });
     }
-    console.log("error");
-
+    console.log("Empty");
 })
 // app.post('/postreq',async (req,res)=>{
 //     const requestItem = require('./models/requestItem');
@@ -40,9 +40,9 @@ app.get('/',async (req,res)=>{
 //     if(newreq) return res.send(newreq)
 // })
 
-let PORT = process.env.PORT || 81;
-server.listen(PORT, ()=>{
-    console.log("server listen on port "+PORT);
+let PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log("server listen on port " + PORT);
 });
 
 // let urlMongo = "mongodb://localhost:27017/node_chat";
@@ -55,3 +55,4 @@ mongoose.connect(urlMongo, { useNewUrlParser: true }).then(
     }
 )
     .catch(connectError => connectError);
+

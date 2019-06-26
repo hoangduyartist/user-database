@@ -1,0 +1,37 @@
+<div id="<%=typeof item!= 'undefined' ? item.name : ''%>" class="jumbotron py-4 hover-effect">
+    <div class="container">
+        <h1 class="display-4 text-center"><%=typeof item!= 'undefined' ? item.name : ''%></h1>
+        <hr class="my-2">
+        <div class="row">
+            <div class="col-6">
+                <p class="lead">End point: <strong>/<%=typeof item!= 'undefined' ? item.endpoint : ''%></strong></p>
+            </div>
+            <div class="col-6">
+                <p class="lead text-right">Method: <strong><%=typeof item!= 'undefined' ? item.method : ''%></strong>
+                </p>
+            </div>
+        </div>
+        <p class="lead">url:
+            <strong
+                id="url<%= typeof key!='undefined' ? key : '' %>">http://142.93.253.93:81/web-api/<%=typeof item!= 'undefined' ? item.endpoint : ''%></strong>
+            &nbsp;&nbsp;&nbsp;<button id="copyUrlBtn"
+                    class="btn btn-sm btn-outline-primary p-1" >copy</button>
+        </p>
+        <div>
+            <label class="lead">Description:</label>
+            <p class="lead d-inline"><%=typeof item!= 'undefined' ? item.description : '' %></p>
+        </div>
+        <label class="lead">Return:</label>
+        <div class="lead">
+            <ul>
+                <% if(typeof item != 'undefined') { %>
+                <% item.return.forEach((returnList, key)=>{ %>
+                <li><%= returnList %></li>
+                <% }) %>
+                <% } %>
+            </ul>
+            <!-- <%=typeof item!= 'undefined' ? item.return : '' %> -->
+        </div>
+    </div>
+</div>
+

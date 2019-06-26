@@ -5,7 +5,8 @@ const Item = require('../models/item');
 
 module.exports = {
     // authenticate,
-    create
+    create,
+    fetchTest
     // update
 };
 
@@ -13,7 +14,7 @@ module.exports = {
 //     const user = await User.findOne({name:name})
 //     if(!user)
 //     return ({msg:'user-name is incorrect !'})
-    
+
 //     if (user && bcrypt.compareSync(password, user.password)) {
 //         return {
 //             session:user._id,
@@ -24,7 +25,7 @@ module.exports = {
 
 //     return ({msg:'password is incorrect !'});
 // }
-async function create(itemParams){
+async function create(itemParams) {
     // validate
     // if (await User.findOne({ name: userParams.name })) {
     //     // throw 'Username "' + userParams.name + '" is already taken'; //will be catched in .catch()
@@ -32,20 +33,47 @@ async function create(itemParams){
     // }
 
     const item = new Item({
-        _id : itemParams._id,
-        fullname : itemParams.fullname,
-        name : itemParams.name,
+        _id: itemParams._id,
+        fullname: itemParams.fullname,
+        name: itemParams.name,
     });
-    
+
     const newitem = await item.save();
     return newitem;
     // if(newitem)
     // return ({newItem:newitem, msg:'Successful !'})
     // return ({msg: 'Failed !'})
 }
-// async function update(usrID,userParams){
-//     let updatedUsr = await User.findByIdAndUpdate(usrID,userParams);
-//     if (updatedUsr)
-//     return ({updatedUser:updatedUsr,msg:'Update successful !'})
-//     return ({msg:'Register failed !'})
-// } 
+async function fetchTest() {
+    let testAPI =
+    {
+        "status": "fetch API test",
+        "characters": [
+            {
+                "id": "1",
+                "name": "Peter Dinklage",
+                "age": "45"
+            },
+            {
+                "id": "2",
+                "name": "Lina Heady",
+                "age": "43"
+            },
+            {
+                "id": "3",
+                "name": "Emilia Clarke",
+                "age": "30"
+            },
+            {
+                "id": "4",
+                "name": "Kit Harrington",
+                "age": "30"
+            },
+            {
+                "id": "5",
+                "name": "Sean Bean",
+                "age": "50"
+            }]
+    }
+    return testAPI;
+} 

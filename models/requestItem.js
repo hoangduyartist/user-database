@@ -11,7 +11,6 @@ const reqItemSchema = new mongoose.Schema({
     method: {
         type: String,
         required: true,
-        // unique: true
     },
     endpoint: {
         type: String,

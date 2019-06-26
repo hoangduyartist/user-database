@@ -3,13 +3,17 @@ let path = require("path");
 let multer = require("multer");
 
 let userService = require('./../services/userService');
+let imgService = require('./../services/imgService');
+let config = require('./../config');
 
 module.exports = {
     authenticate,
     createNew,
     active,
     reactive,
-    KYCVerify
+    KYCVerify,
+    getCode,
+    setNewPass
     // update
 };
 
@@ -49,6 +53,7 @@ function checkFileType(file, cb) {
 //end functions
 
 let images = [];
+let email = '';
 
 function createNew(req, res) {
     let newUser = {
@@ -99,28 +104,34 @@ function KYCVerify(req, res) {
 
     upload(req, res, (err) => {
         // console.log(path);
-        //console.log(req.files);
         if (err) {
             return res.status(406).send(err);
         } else {
 
-            if (req.files == undefined) {
-                res.status(404).send({statusCode:0, messge: 'Error: No File Selected!'});
+            if (!(req.files && req.files.myImage)) {
+                return res.status(404).send({statusCode:0, messge: 'Error: No File Selected!'});
             } else {
-                //UI
-                // let mongoose = require("mongoose");
-                // let imgUI = {
-
-                //     _id: mongoose.Types.ObjectId(),
-                //     path: `uploads/${req.file.filename}`,
-                //     name: req.file.filename,
-                //     description: req.body.description
-                // }
+                let KYCimg = [];
+                req.files.myImage.map((img,key)=>{
+                    let newImg = {
+                        _id: mongoose.Types.ObjectId(),
+                        name: img.filename,
+                        path: `uploads/${img.filename}`,  
+                        userID: req.decoded.userID,
+                        kind:"KYC-upload-img"                              
+                    }
+                    KYCimg.push(newImg);
+                });
                 // images.push(imgUI);
-                // if(req.files.length<3)
-                // return res.status(406).send({statusCode:0, message: "Not enough images !"});
-                return res.status(200).send({statusCode:1, message:"KYC upload image successful !",data:req.files});
-                //end UI
+                imgService.create(KYCimg)
+                .then(data=>{
+                    let toUser = {email: "napaad2019@gmail.com"};
+                    let content = `Hi admin, You have a KYC-verify request from user ${req.decoded.userID}. `;
+                    // Click link below\nhttp:\/\/localhost:81\/web-api\/confirmation\/verify-email.${userInfo._id}\n` 
+                    //config.sendEmail(toUser, content);
+                    return res.status(200).send(data);
+                })
+                .catch(e=>res.send(e))
 
             }
         }
@@ -128,3 +139,16 @@ function KYCVerify(req, res) {
     
 }
 
+function getCode(req,res){
+    if(req.body.email == 'undefined')
+    return {statusCode: 0, message: "Please input your email."};
+
+    userService.sendCodeToEmail(req.body.email)
+    .then(data=>res.send(data))
+    .catch()
+}
+function setNewPass(req,res){
+    userService.setNewPass(req.body.code,req.body.newpassword)
+    .then(data=>res.send(data))
+    .catch(err=>res.send(err))
+}

@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 let userController = require('./../controllers/userController');
 let itemController = require('./../controllers/itemController');
+let adminController = require('./../controllers/adminController');
 let config = require('./../config');
 
 async function checkToken(req,res,next){
@@ -31,10 +32,15 @@ async function checkToken(req,res,next){
 
 router.post('/new', userController.createNew);
 router.post('/login',userController.authenticate);
+router.post('/forgotpassword',userController.getCode);
+router.post('/forgotpassword.newpassword',userController.setNewPass);
 router.get('/confirmation/verify-email.:userID',userController.active);
 router.get('/confirmation/verify-email/resend-email',userController.reactive)
 router.post('/KYC-upload-img',checkToken,userController.KYCVerify);
 router.get('/test',itemController.fetchTest);
 router.get('/mainpagetest',checkToken,itemController.protectRouter);
-
+//admin
+router.get('/admin/dashboard',checkToken,adminController.dashBoard);
+router.get('/admin/dashboard/KYC-verify/del-img-all',checkToken,adminController.delAllKYCImg);
+//end admin
 module.exports = router;

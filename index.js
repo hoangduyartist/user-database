@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 const server = require("http").Server(app);
 const bodyParser = require("body-parser");
-
 const mongoose = require("mongoose");
+
 const webAPI = require("./routers/webAPI");
 
 //app.use(bodyParser.raw({ inflate: true, limit: '100kb', type: 'application/octet-stream' }));
@@ -55,20 +55,3 @@ mongoose.connect(urlMongo, { useNewUrlParser: true }).then(
     }
 )
     .catch(connectError => connectError);
-
-// let item = require('./models/item');
-// app.post('/new', async (req,res)=>{
-//     let newItem = new item({
-//         _id: new mongoose.Types.ObjectId(),
-//         fullname: req.body.fullname,
-//         name: req.body.name,
-//     })
-//     let fullname = req.body.fullname;
-//     console.log(fullname);
-//     newItem1 = await newItem.save();
-//     if(newItem1) {
-//         return res.status(200).send(newItem1);
-//         // return ({newItem: newItem1})
-//     }
-//     return res.status(500).send({msg:"error"});
-// })

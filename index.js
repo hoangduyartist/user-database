@@ -22,7 +22,7 @@ app.get('/', async (req, res) => {
 
     if (reqItem) {
         //console.log(reqItem);
-        return res.render("index", { reqItem });
+        return res.render("index.ejs", { reqItem });
     }
     console.log("Empty");
 })
@@ -40,7 +40,7 @@ app.get('/', async (req, res) => {
 //     if(newreq) return res.send(newreq)
 // })
 
-let PORT = process.env.PORT || 3000;
+let PORT = process.env.PORT || 81;
 server.listen(PORT, () => {
     console.log("server listen on port " + PORT);
 });
@@ -48,7 +48,7 @@ server.listen(PORT, () => {
 // let urlMongo = "mongodb://localhost:27017/node_chat";
 let urlMongo = process.env.MONGODB_URI || "mongodb+srv://hoangduy:hoangduy@cluster0-a0ada.mongodb.net/trainingDB?retryWrites=true";
 mongoose.Promise = global.Promise;
-mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false);
 mongoose.connect(urlMongo, { useNewUrlParser: true }).then(
     (rs) => {
         console.log('connect DataBase MongGo OK');

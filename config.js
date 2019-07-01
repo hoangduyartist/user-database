@@ -21,7 +21,8 @@ function sendEmail(toUser, content){
 
     let mailOptions = {
 
-        from: 'userservicetraining2019@gmail.com',
+        // from: 'userservicetraining2019@gmail.com',
+        from: 'napa training 2019',
         to: toUser.email,
         subject: 'Global Traning - Verify email',
         // text: `Hi there, please verify email to active your account. Click link below\nhttp:\/\/localhost:81\/web-api\/confirmation\/verify-email.${newuser._id}\n`

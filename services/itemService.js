@@ -6,7 +6,8 @@ const Item = require('../models/item');
 module.exports = {
     // authenticate,
     create,
-    fetchTest
+    fetchTest,
+    fetchTestWithID
     // update
 };
 
@@ -43,6 +44,16 @@ async function create(itemParams) {
     // if(newitem)
     // return ({newItem:newitem, msg:'Successful !'})
     // return ({msg: 'Failed !'})
+}
+async function fetchTestWithID(ID){
+    if(ID==1)
+    return {"object-order":1}
+    if(ID==2)
+    return {"object-order":2}
+    if(ID==3)
+    return {"object-order":3}
+    if(ID==4)
+    return {"object-order":4}
 }
 async function fetchTest() {
     let testAPI =

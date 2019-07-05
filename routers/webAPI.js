@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 let userController = require('./../controllers/userController');
 let itemController = require('./../controllers/itemController');
 let adminController = require('./../controllers/adminController');
+let swaggerController = require('./../controllers/swaggerController');
 let config = require('./../config');
 
 async function checkToken(req,res,next){
@@ -31,15 +32,21 @@ async function checkToken(req,res,next){
     
 }
 
-router.post('/new', userController.createNew);
-router.post('/login',userController.authenticate);
-router.post('/forgotpassword',userController.getCode);
-router.post('/forgotpassword.newpassword',userController.setNewPass);
-router.get('/confirmation/verify-email.:userID',userController.active);
+//swagger
+router.use('/docs',swaggerController.swaggerUI.serve,swaggerController.swaggerUI.setup(swaggerController.swaggerSpec));
+router.get('/json',swaggerController.getJson)
+//end swagger
 
-router.get('/confirmation/verify-email/resend-email',userController.reactive)
-router.post('/KYC-upload-img',checkToken,userController.KYCVerify);
+router.post('/user/new', userController.createNew);
+router.post('/user/login',userController.authenticate);
+router.post('/user/forgotpassword',userController.getCode);
+router.post('/user/forgotpassword.newpassword',userController.setNewPass);
+
+router.get('/user/confirmation/verify-email.:userID',userController.active);
+router.get('/user/confirmation/verify-email/resend-email',userController.reactive)
+router.post('/user/KYC-upload-img',checkToken,userController.KYCVerify);
 router.get('/test',itemController.fetchTest);
+router.get('/test/:testID', itemController.fetchTestWithID);
 router.get('/mainpagetest',checkToken,itemController.protectRouter);
 //admin
 router.get('/admin/dashboard',checkToken,adminController.dashBoard);

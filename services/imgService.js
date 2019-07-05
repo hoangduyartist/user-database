@@ -27,6 +27,6 @@ async function create(images) {
         return { statusCode: 1, message: "Upload successful !", imgNum };
     }
 
-    return { statusCode: 1, message: "Upload failed !" };
+    return { statusCode: 0, message: "Upload failed !" };
 
 }

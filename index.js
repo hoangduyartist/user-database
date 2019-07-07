@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const webAPI = require("./routers/webAPI");
+const config = require("./config");
 
 //app.use(bodyParser.raw({ inflate: true, limit: '100kb', type: 'application/octet-stream' }));
 app.use(express.static("public")); //auto access /public in client
@@ -24,7 +25,7 @@ app.get('/', async (req, res) => {
         //console.log(reqItem);
         return res.render("index.ejs", { reqItem });
     }
-    console.log("Empty");
+    return res.status(404).send("Resources are Empty");
 })
 // app.post('/postreq',async (req,res)=>{
 //     const requestItem = require('./models/requestItem');
@@ -40,9 +41,9 @@ app.get('/', async (req, res) => {
 //     if(newreq) return res.send(newreq)
 // })
 
-let PORT = process.env.PORT || 81;
+const PORT = config.PORT;
 server.listen(PORT, () => {
-    console.log("server listen on port " + PORT);
+    console.log("server listen on port " + PORT + " with host " + config.HOST);
 });
 
 // let urlMongo = "mongodb://localhost:27017/node_chat";

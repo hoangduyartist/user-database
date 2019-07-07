@@ -40,16 +40,22 @@ router.get('/json',swaggerController.getJson)
 router.post('/user/new', userController.createNew);
 router.post('/user/login',userController.authenticate);
 router.post('/user/forgotpassword',userController.getCode);
-router.post('/user/forgotpassword.newpassword',userController.setNewPass);
-
+router.put('/user/forgotpassword.newpassword',userController.setNewPass);
 router.get('/user/confirmation/verify-email.:userID',userController.active);
 router.get('/user/confirmation/verify-email/resend-email',userController.reactive)
 router.post('/user/KYC-upload-img',checkToken,userController.KYCVerify);
+
+//test
 router.get('/test',itemController.fetchTest);
 router.get('/test/:testID', itemController.fetchTestWithID);
+router.post('/test/new', itemController.postTest);
+router.delete('/test/delete/:testID', itemController.deleteWithID);
+router.delete('/test/delete-all', checkToken, itemController.deleteAll);
 router.get('/mainpagetest',checkToken,itemController.protectRouter);
+// test
+
 //admin
 router.get('/admin/dashboard',checkToken,adminController.dashBoard);
-router.get('/admin/dashboard/KYC-verify/del-img-all',checkToken,adminController.delAllKYCImg);
+router.delete('/admin/dashboard/KYC-verify/del-img-all',checkToken,adminController.delAllKYCImg);
 //end admin
 module.exports = router;

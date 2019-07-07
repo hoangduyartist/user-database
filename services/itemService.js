@@ -61,27 +61,27 @@ async function fetchTest() {
         "status": "fetch API test",
         "characters": [
             {
-                "id": "1",
+                "id": 1,
                 "name": "Peter Dinklage",
                 "age": "45"
             },
             {
-                "id": "2",
+                "id": 2,
                 "name": "Lina Heady",
                 "age": "43"
             },
             {
-                "id": "3",
+                "id": 3,
                 "name": "Emilia Clarke",
                 "age": "30"
             },
             {
-                "id": "4",
+                "id": 4,
                 "name": "Kit Harrington",
                 "age": "30"
             },
             {
-                "id": "5",
+                "id": 5,
                 "name": "Sean Bean",
                 "age": "50"
             }]

@@ -63,7 +63,7 @@ let email = '';
  *   post:
  *     description: Send user-info to server (include username, password, email), then activate account by email
  *     tags:
- *       - users
+ *       - user
  *     produces:
  *       - application/json
  *     consumes:
@@ -109,7 +109,7 @@ function createNew(req, res) {
  *   post:
  *     description: authentication
  *     tags:
- *       - users
+ *       - user
  *     produces:
  *       - application/json
  *       - application/xml
@@ -155,7 +155,7 @@ function authenticate(req, res) {
  *   get:
  *     description: Activate account
  *     tags:
- *       - users
+ *       - user
  *     produces:
  *       - application/json
  *     parameters:
@@ -184,7 +184,7 @@ function active(req, res) {
  *   get:
  *     description: Re-activate account
  *     tags:
- *       - users
+ *       - user
  *     produces:
  *       - application/json
  *     responses:
@@ -205,7 +205,7 @@ function reactive(req, res) {
  *   post:
  *     description: Send your email to server to get code for changing your password
  *     tags:
- *       - users
+ *       - user
  *     produces:
  *       - application/json
  *     consumes:
@@ -237,10 +237,10 @@ function getCode(req, res) {
 /**
  * @swagger
  * /user/forgotpassword.newpassword:
- *   post:
+ *   put:
  *     description: Send your code and new password to server for setting new password
  *     tags:
- *       - users
+ *       - user
  *     produces:
  *       - application/json
  *     consumes:
@@ -267,6 +267,34 @@ function setNewPass(req, res) {
         .catch(err=>res.status(500).send({ statusCode: 0, message: err }))
 }
 
+/**
+ * @swagger
+ * /user/KYC-upload-img:
+ *   post:
+ *     description: Send your portrait to server for verifying
+ *     tags:
+ *       - user
+ *     produces:
+ *       - application/json
+ *     consumes:
+ *       - multipart/form-data     
+ *     parameters:
+*       - name: Authorization
+ *         description: your token
+ *         in: header
+ *         type: string 
+ *         required: true  
+ *       - name: myImage
+ *         description: set new password
+ *         in: formData
+ *         type: file 
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: (status:1) Successful
+ *       203:
+ *         description: (status:0) Non-authoritative Information
+ */
 function KYCVerify(req, res) {
 
     upload(req, res, (err) => {

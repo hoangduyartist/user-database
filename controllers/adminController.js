@@ -7,12 +7,56 @@ module.exports = {
     delAllKYCImg
 }
 
+/**
+ * @swagger
+ * /admin/dashboard:
+ *   get:
+ *     description: Return dashboard page for admin after login
+ *     tags:
+ *       - admin
+ *     produces:
+ *       - application/json
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: Authorization
+ *         in: header
+ *     responses:
+ *       200:
+ *         description: Dashboard page returned
+ *       401: 
+ *         description: Unauthorize 
+ *         schema:
+ //*          $ref: '#/definitions/fetchData'
+ */
 function dashBoard(req, res) {
     adminService.getDashBoard(req.decoded.userID)
         .then(data => res.send(data))
         .catch(error => res.send(error))
 }
 
+/**
+ * @swagger
+ * /admin/dashboard/KYC-verify/del-img-all:
+ *   delete:
+ *     description: Delete all KYC-verified images
+ *     tags:
+ *       - admin
+ *     produces:
+ *       - application/json
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: Authorization
+ *         in: header
+ *     responses:
+ *       200:
+ *         description: Delete all image successful
+ *       401: 
+ *         description: Unauthorize 
+ *         schema:
+ //*          $ref: '#/definitions/fetchData'
+ */
 function delAllKYCImg(req, res) {
 
     const directory = './public/uploads';

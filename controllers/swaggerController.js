@@ -13,13 +13,15 @@ const options = {
                 email: 'hoangduy.artist@gmail.com'
             }
         },
-        // definitions: {
-        //     users: {
-        //         properties: {
-        //             username: {type: String},
-        //         }
-        //     },
-        // },
+        definitions: {
+            test: {
+                properties: {
+                    id : {type: Number},
+                    name: {type: String},
+                    age: {type: Number}
+                }
+            },
+        },
         // tags: [
         //   {
         //     name: 'stocks',
@@ -30,7 +32,7 @@ const options = {
         host: `${config.HOST}:${config.PORT}`,
         basePath: '/web-api'
     },
-    apis: [ './controllers/userController.js', './controllers/itemController.js', './models/*.js','./routers/webAPI.js']
+    apis: [ './controllers/userController.js', './controllers/adminController.js', './controllers/itemController.js', './models/*.js','./routers/webAPI.js']
 
 }
 

@@ -26,7 +26,7 @@ async function authenticate({ username, password }) {
             return { status: 0, message: "your account hasn't been activated." }
         }
 
-        const token = jwt.sign({ userID: user._id }, config.secretString, { expiresIn: '1d' });
+        const token = jwt.sign({ userID: user._id, role: user.role }, config.secretString, { expiresIn: '1d' });
         userInfo = user;
 
         return { status: 1, message: "Successfully logged in!", data: { user: user, token: token } }

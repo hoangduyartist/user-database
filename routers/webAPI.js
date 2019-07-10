@@ -7,7 +7,7 @@ let userController = require('./../controllers/userController');
 let itemController = require('./../controllers/itemController');
 let adminController = require('./../controllers/adminController');
 let swaggerController = require('./../controllers/swaggerController');
-let config = require('./../config');
+let config = require('./../configs/config');
 
 async function checkToken(req,res,next){
     let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
@@ -44,6 +44,7 @@ router.put('/user/forgotpassword.newpassword',userController.setNewPass);
 router.get('/user/confirmation/verify-email.:userID',userController.active);
 router.get('/user/confirmation/verify-email/resend-email',userController.reactive)
 router.post('/user/KYC-upload-img',checkToken,userController.KYCVerify);
+router.put('/user/update-profile/:userID', userController.updateProfile);
 
 //test
 router.get('/test',itemController.fetchTest);

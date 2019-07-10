@@ -4,7 +4,6 @@ let multer = require("multer");
 
 let userService = require('./../services/userService');
 let imgService = require('./../services/imgService');
-let config = require('./../config');
 
 module.exports = {
     authenticate,
@@ -13,7 +12,8 @@ module.exports = {
     reactive,
     KYCVerify,
     getCode,
-    setNewPass
+    setNewPass,
+    updateProfile
     // update
 };
 
@@ -100,7 +100,7 @@ function createNew(req, res) {
             }
             return res.status(500).send(data);
         })
-        .catch(err=>res.status(500).send({ statusCode: 0, message: err }))
+        .catch(err => res.status(500).send({ statusCode: 0, message: err }))
 }
 
 /**
@@ -139,14 +139,14 @@ function createNew(req, res) {
  *         description: (status:0) Username and password don't match
  */
 function authenticate(req, res) {
-    //console.log(req.body);
+
     let username = req.body.username,
         password = req.body.password;
     userService.authenticate({ username, password })
         .then(data => {
             return res.json(data);
         })
-        .catch(err=>res.status(500).send({ statusCode: 0, message: err }))
+        .catch(err => res.status(500).send({ statusCode: 0, message: err }))
 }
 
 /**
@@ -175,7 +175,7 @@ function active(req, res) {
         .then(data => {
             return res.status(200).send(data);
         })
-        .catch(err=>res.status(500).send({ statusCode: 0, message: err }))
+        .catch(err => res.status(500).send({ statusCode: 0, message: err }))
 }
 
 /**
@@ -194,8 +194,8 @@ function active(req, res) {
 function reactive(req, res) {
 
     userService.reSendEmail()
-    .then(data=>res.send(data))
-    .catch(err=>res.status(500).send({ statusCode: 0, message: err }))
+        .then(data => res.send(data))
+        .catch(err => res.status(500).send({ statusCode: 0, message: err }))
 
 }
 
@@ -227,12 +227,12 @@ function reactive(req, res) {
  *         description: (status:0) Bad email, not found in db
  */
 function getCode(req, res) {
-    if (req.body.email == 'undefined')
-        return { statusCode: 0, message: "Please input your email." };
+    if (typeof (req.body.email) == 'undefined')
+        return res.send({ statusCode: 0, message: "Please input your email." });
 
     userService.sendCodeToEmail(req.body.email)
         .then(data => res.send(data))
-        .catch(err=>res.status(500).send({ statusCode: 0, message: err }))
+        .catch(err => res.status(500).send({ statusCode: 0, message: err }))
 }
 /**
  * @swagger
@@ -264,7 +264,7 @@ function getCode(req, res) {
 function setNewPass(req, res) {
     userService.setNewPass(req.body.code, req.body.newpassword)
         .then(data => res.send(data))
-        .catch(err=>res.status(500).send({ statusCode: 0, message: err }))
+        .catch(err => res.status(500).send({ statusCode: 0, message: err }))
 }
 
 /**
@@ -285,7 +285,12 @@ function setNewPass(req, res) {
  *         type: string 
  *         required: true  
  *       - name: myImage
- *         description: set new password
+ *         description: image
+ *         in: formData
+ *         type: file 
+ *         required: true
+ *       - name: myImage
+ *         description: image
  *         in: formData
  *         type: file 
  *         required: true
@@ -295,14 +300,14 @@ function setNewPass(req, res) {
  *       203:
  *         description: (status:0) Non-authoritative Information
  */
-function KYCVerify(req, res) {
+function KYCVerify(req, res, next) {
 
     upload(req, res, (err) => {
         // console.log(path);
         if (err) {
-            return res.status(406).send(err);
+            next(new Error(err))
+            // return res.status(406).send(err);
         } else {
-
             if (!(req.files && req.files.myImage)) {
                 return res.status(404).send({ statusCode: 0, messge: 'Error: No File Selected!' });
             } else {
@@ -320,18 +325,22 @@ function KYCVerify(req, res) {
                 // images.push(imgUI);
                 imgService.create(KYCimg)
                     .then(data => {
-                        let toUser = { email: "napaad2019@gmail.com" };
-                        let content = `Hi admin, You have a KYC-verify request from user ${req.decoded.userID}. `;
-                        // Click link below\nhttp:\/\/localhost:81\/web-api\/confirmation\/verify-email.${userInfo._id}\n` 
-                        //config.sendEmail(toUser, content);
                         return res.status(200).send(data);
                     })
-                    .catch(err=>res.status(500).send({ statusCode: 0, message: err }))
+                    // .catch(err=>res.status(500).send({ statusCode: 0, message: err }))
+                    .catch(err => next(new Error(err)))
 
             }
         }
     });
 
+}
+
+function updateProfile(req, res) {
+
+    userService.updateProfile(req.params.userID, req.body)
+        .then(data => res.send(data))
+        .catch(err => res.send(err))
 }
 
 

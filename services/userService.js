@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
-let config = require('./../config');
+let config = require('./../configs/config');
 let userInfo = '';
 
 module.exports = {
@@ -11,7 +11,8 @@ module.exports = {
     activeAccount,
     reSendEmail,
     sendCodeToEmail,
-    setNewPass
+    setNewPass,
+    updateProfile
 };
 
 async function authenticate({ username, password }) {
@@ -95,9 +96,9 @@ async function activeAccount({ userID }) {
             return ({ status: 0, message: "Your account is already activated." })
     }
     const activeAcc = await User.findByIdAndUpdate(userID, { isVerified: true });
-    if (activeAcc)
+    if (activeAcc){
         return ({ status: 1, message: "Your account is activated." })
-
+    }
 
     return ({ status: 0, message: "error occurred !" })
 
@@ -167,3 +168,11 @@ async function setNewPass(code, newPass) {
     // }catch(err){console.log(err)}
 }
  //end forgot pass
+
+async function updateProfile(userID, profile){
+    const newInfo = await User.findByIdAndUpdate(userID, {profile:profile}, {new: true})
+    if(newInfo)
+    return ({status: 1, newinfo: newInfo, message: "Update profile successful"})
+    
+    return ({status: 0, message: "Error occured"})
+} 

@@ -61,6 +61,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         default: "user"
+    },
+    profile: {
+        fullname: {type: String, default: null},
+        phone: {type: String, default: null },
+        birthday: {type: String, default: null}
+        // not using phone, phonenumber, birthday...
     }
 });
 

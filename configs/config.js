@@ -1,10 +1,8 @@
 
-const nodemailer = require("nodemailer");
-const path = require("path");
-const multer = require("multer");
-
 let HOST = process.env.HOST || "localhost";
 let PORT = process.env.PORT || 81;
+
+const nodemailer = require("nodemailer");
 
 async function sendEmail(toUser, content){
     let transporter = nodemailer.createTransport({

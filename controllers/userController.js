@@ -100,7 +100,7 @@ function createNew(req, res) {
             }
             return res.status(500).send(data);
         })
-        .catch(err => res.status(500).send({ statusCode: 0, message: err }))
+        .catch(err => res.send({ status: 0, message: err }))
 }
 
 /**
@@ -146,7 +146,7 @@ function authenticate(req, res) {
         .then(data => {
             return res.json(data);
         })
-        .catch(err => res.status(500).send({ statusCode: 0, message: err }))
+        .catch(err => res.send({ status: 0, message: err }))
 }
 
 /**
@@ -175,7 +175,7 @@ function active(req, res) {
         .then(data => {
             return res.status(200).send(data);
         })
-        .catch(err => res.status(500).send({ statusCode: 0, message: err }))
+        .catch(err => res.send({ status: 0, message: err }))
 }
 
 /**
@@ -191,11 +191,12 @@ function active(req, res) {
  *       200:
  *         description: (status:1) Successful, Email resent
  */
-function reactive(req, res) {
+function reactive(req, res, next) {
 
     userService.reSendEmail()
         .then(data => res.send(data))
-        .catch(err => res.status(500).send({ statusCode: 0, message: err }))
+        .catch(err => res.send({ status: 0, message: err }))
+        // .catch(err => next(err));
 
 }
 
@@ -218,7 +219,7 @@ function reactive(req, res) {
  *         required: true
   *         schema:
   *           example: {
-  *             "email": "youremail@gmailcom"
+  *             "email": "youremail@gmail.com"
   *           }
  *     responses:
  *       200:
@@ -232,7 +233,7 @@ function getCode(req, res) {
 
     userService.sendCodeToEmail(req.body.email)
         .then(data => res.send(data))
-        .catch(err => res.status(500).send({ statusCode: 0, message: err }))
+        .catch(err => res.send({ status: 0, message: err }))
 }
 /**
  * @swagger
@@ -252,7 +253,7 @@ function getCode(req, res) {
  *         required: true
   *         schema:
   *           example: {
-  *             "code": "youremail@gmailcom",
+  *             "code": "yourcode",
   *             "newpassword": "newpassword"
   *           }
  *     responses:
@@ -264,7 +265,7 @@ function getCode(req, res) {
 function setNewPass(req, res) {
     userService.setNewPass(req.body.code, req.body.newpassword)
         .then(data => res.send(data))
-        .catch(err => res.status(500).send({ statusCode: 0, message: err }))
+        .catch(err => res.send({ status: 0, message: err }))
 }
 
 /**
@@ -279,21 +280,15 @@ function setNewPass(req, res) {
  *     consumes:
  *       - multipart/form-data     
  *     parameters:
-*       - name: Authorization
+ *       - name: Authorization
  *         description: your token
  *         in: header
  *         type: string 
- *         required: true  
  *       - name: myImage
+ *         required: true 
  *         description: image
  *         in: formData
  *         type: file 
- *         required: true
- *       - name: myImage
- *         description: image
- *         in: formData
- *         type: file 
- *         required: true
  *     responses:
  *       200:
  *         description: (status:1) Successful
@@ -317,7 +312,7 @@ function KYCVerify(req, res, next) {
                         _id: mongoose.Types.ObjectId(),
                         name: img.filename,
                         path: `uploads/${img.filename}`,
-                        userID: req.decoded.userID,
+                        //userID: req.decoded.userID,
                         kind: "KYC-upload-img"
                     }
                     KYCimg.push(newImg);
@@ -327,8 +322,8 @@ function KYCVerify(req, res, next) {
                     .then(data => {
                         return res.status(200).send(data);
                     })
-                    // .catch(err=>res.status(500).send({ statusCode: 0, message: err }))
-                    .catch(err => next(new Error(err)))
+                    .catch(err => res.send({ status: 0, message: err }))
+                    // .catch(err => next(err))
 
             }
         }
@@ -340,7 +335,7 @@ function updateProfile(req, res) {
 
     userService.updateProfile(req.params.userID, req.body)
         .then(data => res.send(data))
-        .catch(err => res.send(err))
+        .catch(err => res.send({ status: 0, message: err }))
 }
 
 

@@ -25,12 +25,6 @@ app.use(morgan('combined', { stream: winston.stream }));
 app.use('/web-api', webAPI);
 
 app.get('/', async (req, res) => {
-    // let checknum = (num)=>{
-    //     return num>3;
-    // }
-    // if(!checknum(3)){
-    //     console.log("hi")
-    // }
 
     const requestItem = require('./models/requestItem');
     const reqItem = await requestItem.find({});
@@ -54,25 +48,28 @@ app.get('/', async (req, res) => {
 //     if(newreq) return res.send(newreq)
 // })
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    next(createError(404));
-    // next(new Error(err.message))
-  });
+function logErrors(err, req, res, next) {
+    winston.log('error', 'Exception: ', err);
+    next(err);
+}
 
-// error handler
-app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-  
-    // add this line to include winston logging
-    winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
-  
-    // render the error page
-    res.status(err.status || 500).send({err});
-    // res.render('error');
-  });
+/**
+ * Must have next here.index.js
+ * @param err
+ * @param req
+ * @param res
+ * @param next require.
+ */
+
+/ eslint-disable no-unused-vars /
+function errorHandler(err, req, res, next) {
+    res.statusMessage = err.message;
+    res.status(err.code || 500)
+        .json({ error: err.message });
+}
+
+// app.use(logErrors);
+// app.use(errorHandler);
 
 const PORT = config.PORT;
 server.listen(PORT, () => {

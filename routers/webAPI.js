@@ -43,7 +43,7 @@ router.post('/user/forgotpassword',userController.getCode);
 router.put('/user/forgotpassword.newpassword',userController.setNewPass);
 router.get('/user/confirmation/verify-email.:userID',userController.active);
 router.get('/user/confirmation/verify-email/resend-email',userController.reactive)
-router.post('/user/KYC-upload-img',checkToken,userController.KYCVerify);
+router.post('/user/KYC-upload-img', userController.KYCVerify);
 router.put('/user/update-profile/:userID', userController.updateProfile);
 
 //test

@@ -13,7 +13,7 @@ async function create(images) {
             _id: img._id,
             name: img.name,
             path: img.path,  
-            userID: img.userID,
+            //userID: img.userID,
             kind: img.kind 
         });
 

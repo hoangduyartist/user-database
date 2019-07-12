@@ -16,6 +16,7 @@ module.exports = {
 };
 
 async function authenticate({ username, password }) {
+
     const user = await User.findOne({ username })
     if (!user)
         return ({ status: 0, message: 'Username is not correct!' })
@@ -74,8 +75,9 @@ async function create(userParams) {
 
 }
 async function reSendEmail() {
-
+    console.log(userInfo);
     let user = await User.findById(userInfo._id);
+    console.log(user);
     if (user) {
         if (user.isVerified == true)
             return ({ status: 0, message: "Your account is already activated."})
@@ -84,7 +86,8 @@ async function reSendEmail() {
         let sendEmail = await config.sendEmail(userInfo, content);
         if(sendEmail)
         return ({ status: 1, message: "Email resent !", email: 'Email sent: '+sendMail.info });
-
+    } else {
+        throw new Error('Not found user');
     }
 
 }
@@ -117,7 +120,7 @@ async function sendCodeToEmail(email) {
         emailToChangePass = user.email;
 
         let content = `Get this code to update your password. Do not share this code for any body !\nYour code is ${code}`
-        let sendEmail = config.sendEmail(user, content);
+        let sendEmail = await config.sendEmail(user, content);
         if(sendEmail)
         return { status: 1, message: `Verify email sent to ${user.email}, check your email to get code.` }
     }

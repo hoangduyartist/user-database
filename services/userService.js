@@ -68,7 +68,7 @@ async function create(userParams) {
 
     if (newuser && sendMail) {
         userInfo = newuser;
-        return ({ status: 1, newuser: newuser, message: "Register successful !", todo: { verifyEmail: `An email has been sent to address ${newuser.email}. Please check email to activate your account.` }, email: 'Email sent: ' + sendMail.response })
+        return ({ status: 1, message: "Register successful !", data:{ user: user }, todo: { verifyEmail: `An email has been sent to address ${newuser.email}. Please check email to activate your account.` }, email: 'Email sent: ' + sendMail.response })
     }   
 
     return ({ status: 0, message: "Register failed !" })
@@ -113,23 +113,28 @@ async function sendCodeToEmail(email) {
     const user = await User.findOne({ email });
     if (user) {
         if(user.isVerified == false)
-        return { status: 0, message: `Email not found or Error occured`, email : 'Email sent: '+sendMail.info }
+        return { status: 0, message: `Email not found or Not verified` }
 
         let code = Math.floor(100000 + Math.random() * 900000);
 
         let content = `Get this code to update your password. Do not share this code for any body !\nYour code is ${code}`
         let sendEmail = await config.sendEmail(user, content);
-        if(sendEmail)
-        return { status: 1, message: `Verify email sent to ${user.email}, check your email to get code.`, code: code, email: email }
+
+        if(sendEmail){
+            await User.findOneAndUpdate({email: email}, {code: code})
+            return { status: 1, message: `Verify email sent to ${user.email}, check your email to get code.`, code: code}
+        }
+        
     }
     return { status: 0, message: `Email not found or Error occured` }
 }
 
-async function setNewPass(codeInput, newPass, header) {
-    //console.log(code + "  "+ codeForChangePass);
+async function setNewPass(codeInput, newPass, email) {
+    
     async function changePass() {
-        if (codeInput == header.code) {
-            const user = await User.findOneAndUpdate({ email: header.email }, { password: newPass });
+        usercode = await User.findOne({email: email})
+        if (codeInput == usercode.code) {
+            const user = await User.findOneAndUpdate({ email: email }, { password: newPass });
             if (user)
                 return { status: 1, message: `Set new password successful` }
         }

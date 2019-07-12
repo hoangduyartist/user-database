@@ -247,6 +247,8 @@ function getCode(req, res) {
  *     consumes:
  *       - application/json     
  *     parameters:
+ *       - name: email
+ *         in: header    
  *       - name: code-and-new-pass
  *         description: set new password
  *         in: body
@@ -263,14 +265,12 @@ function getCode(req, res) {
  *         description: (status:0) Code is wrong or Error occured
  */
 function setNewPass(req, res) {
-    let code = req.headers['code'];
-    let email = req.headers['email'];
-    if(typeof code == 'undefined' || typeof email == 'undefined')
-    return res.send(({ status: 0, message: "Lack of fields" }));
+    email = req.headers['email'];
 
-    let header = {code, email}
+    if(typeof (email) == 'undefined')
+    return res.send({status:0 ,message: `Set new password failed (header)` })
 
-    userService.setNewPass(req.body.code, req.body.newpassword, header)
+    userService.setNewPass(req.body.code, req.body.newpassword, email)
         .then(data => res.send(data))
         .catch(err => res.send({ status: 0, message: err }))
 }

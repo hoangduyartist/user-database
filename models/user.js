@@ -66,8 +66,8 @@ const userSchema = new mongoose.Schema({
         fullname: {type: String, default: null},
         phone: {type: String, default: null },
         birthday: {type: String, default: null}
-        // not using phone, phonenumber, birthday...
-    }
+    },
+    code: {type: Number, default: null} 
 });
 
 userSchema.pre('save', function (next) {

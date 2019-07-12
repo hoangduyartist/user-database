@@ -11,6 +11,7 @@ let config = require('./../configs/config');
 
 async function checkToken(req,res,next){
     let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
+
     if(typeof token !== 'undefined'){
         if (token.startsWith('Bearer ')) {
             // Remove Bearer from string
@@ -42,7 +43,7 @@ router.post('/user/login',userController.authenticate);
 router.post('/user/forgotpassword',userController.getCode);
 router.put('/user/forgotpassword.newpassword',userController.setNewPass);
 router.get('/user/confirmation/verify-email.:userID',userController.active);
-router.get('/user/confirmation/verify-email/resend-email',userController.reactive)
+router.post('/user/confirmation/verify-email/resend-email',userController.reactive)
 router.post('/user/KYC-upload-img', userController.KYCVerify);
 router.put('/user/update-profile/:userID', userController.updateProfile);
 

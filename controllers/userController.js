@@ -193,7 +193,7 @@ function active(req, res) {
  */
 function reactive(req, res, next) {
 
-    userService.reSendEmail()
+    userService.reSendEmail(req.body.email)
         .then(data => res.send(data))
         .catch(err => res.send({ status: 0, message: err }))
         // .catch(err => next(err));
@@ -263,7 +263,14 @@ function getCode(req, res) {
  *         description: (status:0) Code is wrong or Error occured
  */
 function setNewPass(req, res) {
-    userService.setNewPass(req.body.code, req.body.newpassword)
+    let code = req.headers['code'];
+    let email = req.headers['email'];
+    if(typeof code == 'undefined' || typeof email == 'undefined')
+    return res.send(({ status: 0, message: "Lack of fields" }));
+
+    let header = {code, email}
+
+    userService.setNewPass(req.body.code, req.body.newpassword, header)
         .then(data => res.send(data))
         .catch(err => res.send({ status: 0, message: err }))
 }

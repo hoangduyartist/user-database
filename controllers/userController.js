@@ -174,7 +174,7 @@ function active(req, res) {
 /**
  * @swagger
  * /user/confirmation/verify-email/resend-email:
- *   get:
+ *   post:
  *     description: Re-activate account
  *     tags:
  *       - user
@@ -184,6 +184,10 @@ function active(req, res) {
  *       - name: email
  *         in: body 
  *         required: true
+ *         schema:
+ *           example: {
+ *             "email": "youremail@gmail.com"
+ *           }   
  *     responses:
  *       200:
  *         description: (status:1) Successful, Email resent

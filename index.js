@@ -2,10 +2,10 @@ const express = require('express');
 const app = express();
 const server = require("http").Server(app);
 const bodyParser = require("body-parser");
+// const favicon = require('serve-favicon'); //static-icon deprecated; switch to module serve-favicon
 //logger
 const morgan = require("morgan");
 const winston = require("./configs/winston");
-var createError = require('http-errors');
 //
 const mongoose = require("mongoose");
 
@@ -18,6 +18,7 @@ app.set("view engine", "ejs");
 app.set("views", "./views");
 app.use(bodyParser.json()); //using bodypaser as middleWave
 app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(favicon())
 //logger
 app.use(morgan('combined', { stream: winston.stream }));
 //

@@ -1,4 +1,5 @@
 const adminService = require('./../services/adminService');
+const imgService = require('./../services/imgService');
 const fs = require('fs');
 const path = require('path');
 
@@ -64,11 +65,13 @@ function delAllKYCImg(req, res) {
     fs.readdir(directory, (err, files) => {
         if (err) return res.status(500).send({ statusCode: 0, message: "Error occurred" });
 
+        if (files.length == 0) return res.send({ statusCode: 0, message: "All images are deleted" });
+
         for (const file of files) {
             fs.unlink(path.join(directory, file), err => {
                 if (err) return res.status(500).send({ statusCode: 0, message: "Error occurred" });
 
-                adminService.delAllKYCImg()
+                imgService.delAllKYCImg()
                     .then(data => res.send(data))
                     .catch(error => res.send(error))
             });

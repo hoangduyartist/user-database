@@ -1,32 +1,33 @@
 let Image = require("./../models/image");
 
 module.exports = {
-    create
+    create,
+    delAllKYCImg
 }
 
 async function create(images) {
 
-    let imgNum = 0;
-    await Promise.all( images.map(async (img, key) => {
-        // console.log(item);
-        const newImg = new Image({
-            _id: img._id,
-            name: img.name,
-            path: img.path,  
-            //userID: img.userID,
-            kind: img.kind 
-        });
+    let quantity = 0;
+    const saveImages = await Promise.all(images.map(async (img, key) => {
 
-        if(await newImg.save()){
-            imgNum ++;
+        if (await Image.create(img)) {
+            quantity++;
         }
     }))
 
-    if (imgNum == images.length) {
+    if (saveImages) {
 
-        return { statusCode: 1, message: "Upload successful !", imgNum };
+        return { statusCode: 1, message: "Upload successful", quantity };
     }
 
-    return { statusCode: 0, message: "Upload failed !" };
+    return { statusCode: 0, message: "Upload failed" };
 
+}
+
+async function delAllKYCImg() {
+    const allImg = await Image.remove({});
+    if (allImg) {
+        return { statusCode: 1, message: "Delete all KYC image successful" }
+    }
+    return { statusCode: 0, message: "Error occurred" }
 }

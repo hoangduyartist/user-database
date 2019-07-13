@@ -29,7 +29,7 @@ async function checkToken(req,res,next){
         });
         // next();       
     }
-    else return res.status(403).send({statusCode:0, message:'Auth token is not supplied', todo:'Please login !'});
+    else return res.send({statusCode:0, message:'Auth token is not supplied', todo:'Please login !'});
     
 }
 
@@ -44,7 +44,7 @@ router.post('/user/forgotpassword',userController.getCode);
 router.put('/user/forgotpassword.newpassword',userController.setNewPass);
 router.get('/user/confirmation/verify-email.:userID',userController.active);
 router.post('/user/confirmation/verify-email/resend-email',userController.reactive)
-router.post('/user/KYC-upload-img', userController.KYCVerify);
+router.post('/user/KYC-upload-img', checkToken, userController.KYCVerify);
 router.put('/user/update-profile/:userID', userController.updateProfile);
 
 //test

@@ -67,7 +67,17 @@ const userSchema = new mongoose.Schema({
         phone: {type: String, default: null },
         birthday: {type: String, default: null}
     },
-    code: {type: Number, default: null} 
+    // resetPassword: {
+
+    // }
+    code: {type: Number, default: null},
+    codeID: {type: Number, default: null},
+    codeExpire: {type: Number, default: null}
+    // crypto.randomBytes(20, function(err, buf) {
+    //     var token = buf.toString('hex');
+    //     done(err, token);
+    //   });
+     
 });
 
 userSchema.pre('save', function (next) {

@@ -14,7 +14,6 @@ module.exports = {
     getCode,
     setNewPass,
     updateProfile
-    // update
 };
 
 
@@ -55,7 +54,6 @@ function checkFileType(file, cb) {
 
 
 let images = [];
-let email = '';
 
 /**
  * @swagger
@@ -94,12 +92,7 @@ function createNew(req, res) {
         password: req.body.password
     }
     userService.create(newUser)
-        .then(data => {
-            if (data.newuser) {
-                return res.status(200).send(data);
-            }
-            return res.status(500).send(data);
-        })
+        .then(data => res.send(data))
         .catch(err => res.send({ status: 0, message: err }))
 }
 
@@ -187,17 +180,22 @@ function active(req, res) {
  *       - user
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - name: email
+ *         in: body 
+ *         required: true
  *     responses:
  *       200:
  *         description: (status:1) Successful, Email resent
  */
 function reactive(req, res, next) {
-
+    if(typeof (req.body.email) == 'undefined')
+    return {status: 0, message: "Please input your email"}
+    
     userService.reSendEmail(req.body.email)
         .then(data => res.send(data))
         .catch(err => res.send({ status: 0, message: err }))
         // .catch(err => next(err));
-
 }
 
 /**
@@ -247,7 +245,7 @@ function getCode(req, res) {
  *     consumes:
  *       - application/json     
  *     parameters:
- *       - name: email
+ *       - name: codeid
  *         in: header    
  *       - name: code-and-new-pass
  *         description: set new password
@@ -265,12 +263,13 @@ function getCode(req, res) {
  *         description: (status:0) Code is wrong or Error occured
  */
 function setNewPass(req, res) {
-    email = req.headers['email'];
+    // let email = req.headers['email'];
+    let codeID = req.headers['codeid']; //header name only lower-case
 
-    if(typeof (email) == 'undefined')
+    if(typeof codeID == 'undefined')
     return res.send({status:0 ,message: `Set new password failed (header)` })
 
-    userService.setNewPass(req.body.code, req.body.newpassword, email)
+    userService.setNewPass(req.body.code, req.body.newpassword, codeID)
         .then(data => res.send(data))
         .catch(err => res.send({ status: 0, message: err }))
 }
@@ -310,6 +309,7 @@ function KYCVerify(req, res, next) {
             next(new Error(err))
             // return res.status(406).send(err);
         } else {
+            let userUpload = req.decoded.userID;
             if (!(req.files && req.files.myImage)) {
                 return res.status(404).send({ statusCode: 0, messge: 'Error: No File Selected!' });
             } else {
@@ -319,7 +319,7 @@ function KYCVerify(req, res, next) {
                         _id: mongoose.Types.ObjectId(),
                         name: img.filename,
                         path: `uploads/${img.filename}`,
-                        //userID: req.decoded.userID,
+                        userID: userUpload,
                         kind: "KYC-upload-img"
                     }
                     KYCimg.push(newImg);

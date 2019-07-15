@@ -57,7 +57,10 @@ router.get('/mainpagetest',checkToken,itemController.protectRouter);
 // test
 
 //admin
-router.get('/admin/dashboard',checkToken,adminController.dashBoard);
+// router.get('/admin/dashboard',checkToken,adminController.dashBoard);
+router.get('/admin/dashboard/KYC-verify/', checkToken, adminController.showKYCImg)
+router.get('/admin/dashboard/KYC-verify/:userID',checkToken, adminController.showOwnerKYCImg);
+router.get('/admin/dashboard/KYC-verify/confirm/:userID', checkToken, adminController.activateKYC);
 router.delete('/admin/dashboard/KYC-verify/del-img-all',checkToken,adminController.delAllKYCImg);
 //end admin
 module.exports = router;

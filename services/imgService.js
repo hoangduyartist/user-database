@@ -1,7 +1,10 @@
 let Image = require("./../models/image");
+let User = require("./../models/user");
 
 module.exports = {
     create,
+    showKYCImg,
+    showOwnerKYCImg,
     delAllKYCImg
 }
 
@@ -22,6 +25,21 @@ async function create(images) {
 
     return { statusCode: 0, message: "Upload failed" };
 
+}
+
+async function showKYCImg(){
+    const userList = await User.find({isKYCVerified: false}, {_id: true, profile: true, isKYCVerified: true})
+    if(userList)
+    return { statusCode: 1, message: "All non-KYC-verify user", data: userList };
+} 
+
+async function showOwnerKYCImg(userID) {
+    const img = await Image.findOne({ userID });
+
+    if (img)
+        return { statusCode: 1, message: "Fetch KYC-img successful", data: img }
+
+    return { statusCode: 0, message: "Img not found or error occured " }
 }
 
 async function delAllKYCImg() {

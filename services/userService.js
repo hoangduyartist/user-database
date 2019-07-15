@@ -9,6 +9,7 @@ module.exports = {
     create,
     activeAccount,
     reSendEmail,
+    activateKYC,
     sendCodeToEmail,
     setNewPass,
     updateProfile
@@ -104,9 +105,19 @@ async function activeAccount({ userID }) {
         return ({ status: 1, message: "Your account is activated." })
     }
 
-    return ({ status: 0, message: "error occurred !" })
+    return ({ status: 0, message: "error occurred" })
 
 }
+
+async function activateKYC(userID){
+    const KYCuser = await User.findByIdAndUpdate(userID, {isKYCVerified: true})
+
+    if(KYCuser)
+    return { status: 1, message: "Activate KYC verify successful for user "+KYCuser.username }
+
+    return ({ status: 0, message: "Activate KYC verify failed or error occurred" })
+}
+
 //forgot pass
 async function sendCodeToEmail(email) {
     const user = await User.findOne({ email });

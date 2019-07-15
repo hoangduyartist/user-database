@@ -1,10 +1,15 @@
-const adminService = require('./../services/adminService');
-const imgService = require('./../services/imgService');
 const fs = require('fs');
 const path = require('path');
 
+const adminService = require('./../services/adminService');
+const imgService = require('./../services/imgService');
+const userService = require('./../services/userService');
+
 module.exports = {
     dashBoard,
+    showKYCImg,
+    showOwnerKYCImg,
+    activateKYC,
     delAllKYCImg
 }
 
@@ -32,6 +37,99 @@ module.exports = {
  */
 function dashBoard(req, res) {
     adminService.getDashBoard(req.decoded.userID)
+        .then(data => res.send(data))
+        .catch(error => res.send(error))
+}
+
+/**
+ * @swagger
+ * /admin/dashboard/KYC-verify/:
+ *   get:
+ *     description: fetch all non-KYC user
+ *     tags:
+ *       - admin
+ *     produces:
+ *       - application/json
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: Authorization
+ *         in: header
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Return all non-KYC-verify user 
+ *       401: 
+ *         description: Unauthorize 
+ */
+function showKYCImg(req, res) {
+    imgService.showKYCImg()
+        .then(data => res.send(data))
+        .catch(error => res.send(error))
+}
+
+/**
+ * @swagger
+ * /admin/dashboard/KYC-verify/{userID}:
+ *   get:
+ *     description: fetch KYC-img and userID
+ *     tags:
+ *       - admin
+ *     produces:
+ *       - application/json
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: Authorization
+ *         in: header
+ *         required: true
+ *         type: string
+ *       - name: userID
+ *         in: path
+ *         type: string 
+ *         require: true 
+ *     responses:
+ *       200:
+ *         description: Return KYC-img 
+ *       401: 
+ *         description: Unauthorize 
+ */
+function showOwnerKYCImg(req, res) {
+
+    imgService.showOwnerKYCImg(req.params.userID)
+        .then(data => res.send(data))
+        .catch(error => res.send(error))
+}
+
+/**
+ * @swagger
+ * /admin/dashboard/KYC-verify/confirm/{userID}:
+ *   get:
+ *     description: activate user with KYC authentication
+ *     tags:
+ *       - admin
+ *     produces:
+ *       - application/json
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: Authorization
+ *         in: header
+ *         required: true
+ *         type: string
+ *       - name: userID
+ *         in: path
+ *         type: string 
+ *         require: true 
+ *     responses:
+ *       200:
+ *         description: Return KYC-img 
+ *       401: 
+ *         description: Unauthorize 
+ */
+function activateKYC(req, res) {
+    userService.activateKYC(req.params.userID)
         .then(data => res.send(data))
         .catch(error => res.send(error))
 }

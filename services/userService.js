@@ -123,7 +123,7 @@ async function sendCodeToEmail(email) {
             let resetPass = {
                 code,
                 codeID: Date.now(),
-                codeExpire: Date.now() + 60000
+                codeExpire: Date.now() + 120000
             }
 
             await User.findOneAndUpdate({ email: email }, resetPass)
@@ -136,49 +136,23 @@ async function sendCodeToEmail(email) {
 
 async function setNewPass(codeInput, newPass, codeID) {
 
-    async function changePass() {
-
         usercode = await User.findOne({ codeID, codeExpire: { $gt: Date.now() } })
         if (!usercode)
             return { status: 0, message: "Your code is expired" }
 
         if (codeInput == usercode.code) {
-            const user = await User.findOneAndUpdate({ email: usercode.email }, { password: newPass });
+            let expire = {
+                password: bcrypt.hashSync(newPass, 10),
+                code: null,
+                codeID: null,
+                codeExpire: null
+            }
+            const user = await User.findOneAndUpdate({ email: usercode.email }, expire);
             if (user)
                 return { status: 1, message: `Set new password successful` }
         }
         return { status: 0, message: "Your code is wrong or expired" }
-    }
 
-    // c1    
-    // return new Promise((resolve)=>{
-    //     bcrypt.hash(newPass, 10,async function (err, hash) {
-    //         if (err)
-    //             return { statusCode: 0, message: "Hash failed" }
-
-    //         newPass = hash;
-    //         // res(changePass().then(data));
-    //         changePass().then(data => resolve(data));
-    //     })
-    // })
-    // c2    
-    return bcrypt.hash(newPass, 10)
-        .then(hash => {
-            newPass = hash;
-            // return new Promise(resolve=>{changePass().then(data=>resolve(data))})
-            return changePass()
-        })
-        // .then(data=>data)
-        .catch(e => console.log(e))
-    // c3
-    // try{
-    //     let afterhash = await bcrypt.hash(newPass,10)
-    //     if(afterhash){
-    //         newPass = afterhash;
-    //         let data = await changePass()
-    //         return data;
-    //     }
-    // }catch(err){console.log(err)}
 }
 //end forgot pass
 

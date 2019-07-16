@@ -13,6 +13,7 @@ module.exports = {
     KYCVerify,
     getCode,
     setNewPass,
+    fetchProfile,
     updateProfile
 };
 
@@ -51,9 +52,6 @@ function checkFileType(file, cb) {
     }
 }
 //end functions
-
-
-let images = [];
 
 /**
  * @swagger
@@ -144,7 +142,7 @@ function authenticate(req, res) {
 
 /**
  * @swagger
- * /user/confirmation/verify-email.{userID}:
+ * /user/confirmation/verify-email/{userID}:
  *   get:
  *     description: Activate account
  *     tags:
@@ -156,7 +154,7 @@ function authenticate(req, res) {
  *         description: id of the user to activate
  *         in: path
  *         required: true
- *         type: String
+ *         type: string
  *     responses:
  *       200:
  *         description: (status:1) Successful
@@ -239,7 +237,7 @@ function getCode(req, res) {
 }
 /**
  * @swagger
- * /user/forgotpassword.newpassword:
+ * /user/forgotpassword/newpassword:
  *   put:
  *     description: Send your code and new password to server for setting new password
  *     tags:
@@ -280,7 +278,7 @@ function setNewPass(req, res) {
 
 /**
  * @swagger
- * /user/KYC-upload-img:
+ * /user/kyc-upload-img:
  *   post:
  *     description: Send your portrait to server for verifying
  *     tags:
@@ -291,7 +289,7 @@ function setNewPass(req, res) {
  *       - multipart/form-data     
  *     parameters:
  *       - name: Authorization
- *         description: your token
+ *         description: your session
  *         in: header
  *         type: string 
  *       - name: myImage
@@ -328,7 +326,7 @@ function KYCVerify(req, res, next) {
                     }
                     KYCimg.push(newImg);
                 });
-                // images.push(imgUI);
+
                 imgService.create(KYCimg)
                     .then(data => {
                         return res.status(200).send(data);
@@ -342,9 +340,66 @@ function KYCVerify(req, res, next) {
 
 }
 
-function updateProfile(req, res) {
+/**
+ * @swagger
+ * /user/me/profile:
+ *   get:
+ *     description: Get your info
+ *     tags:
+ *       - user
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: Authorization
+ *         description: Your session
+ *         in: header
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: (status:1) Successful
+ */
+function fetchProfile(req,res){
+    if(typeof req.decoded == 'undefined')
+    return { status: 0, message: "Non-authoritative Information" }
 
-    userService.updateProfile(req.params.userID, req.body)
+    userService.fetchProfile(req.decoded.userID)
+        .then(data => res.send(data))
+        .catch(err => res.send({ status: 0, message: err }))
+}
+/**
+ * @swagger
+ * /user/me/update-profile:
+ *   put:
+ *     description: Update profile
+ *     tags:
+ *       - user
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: Authorization
+ *         description: Your session
+ *         in: header
+ *         required: true
+ *         type: string
+ *       - name: updated-info
+ *         in: body
+ *         required: true
+ *         schema:
+ *          example: {
+ *           "fullname": "your-full-name",
+ *           "phone": "your-phone-number",
+ *           "birthday": "your-day-of-birth"      
+ *          }    
+ *     responses:
+ *       200:
+ *         description: (status:1) Successful
+ */
+function updateProfile(req, res) {
+    if(typeof req.decoded == 'undefined')
+    return { status: 0, message: "Non-authoritative Information" }
+
+    userService.updateProfile(req.decoded.userID, req.body)
         .then(data => res.send(data))
         .catch(err => res.send({ status: 0, message: err }))
 }

@@ -6,44 +6,44 @@ const imgService = require('./../services/imgService');
 const userService = require('./../services/userService');
 
 module.exports = {
-    dashBoard,
+    // dashBoard,
     showKYCImg,
     showOwnerKYCImg,
     activateKYC,
     delAllKYCImg
 }
 
-/**
- * @swagger
- * /admin/dashboard:
- *   get:
- *     description: Return dashboard page for admin after login
- *     tags:
- *       - admin
- *     produces:
- *       - application/json
- *     consumes:
- *       - application/json
- *     parameters:
- *       - name: Authorization
- *         in: header
- *     responses:
- *       200:
- *         description: Dashboard page returned
- *       401: 
- *         description: Unauthorize 
- *         schema:
- //*          $ref: '#/definitions/fetchData'
- */
-function dashBoard(req, res) {
-    adminService.getDashBoard(req.decoded.userID)
-        .then(data => res.send(data))
-        .catch(error => res.send(error))
-}
+// /**
+//  * @swagger
+//  * /admin/dashboard:
+//  *   get:
+//  *     description: Return dashboard page for admin after login
+//  *     tags:
+//  *       - admin
+//  *     produces:
+//  *       - application/json
+//  *     consumes:
+//  *       - application/json
+//  *     parameters:
+//  *       - name: Authorization
+//  *         in: header
+//  *     responses:
+//  *       200:
+//  *         description: Dashboard page returned
+//  *       401: 
+//  *         description: Unauthorize 
+//  *         schema:
+//  //*          $ref: '#/definitions/fetchData'
+//  */
+// function dashBoard(req, res) {
+//     adminService.getDashBoard(req.decoded.userID)
+//         .then(data => res.send(data))
+//         .catch(error => res.send(error))
+// }
 
 /**
  * @swagger
- * /admin/dashboard/KYC-verify/:
+ * /admin/dashboard/kyc-verify:
  *   get:
  *     description: fetch all non-KYC user
  *     tags:
@@ -71,7 +71,7 @@ function showKYCImg(req, res) {
 
 /**
  * @swagger
- * /admin/dashboard/KYC-verify/{userID}:
+ * /admin/dashboard/kyc-verify/{userID}:
  *   get:
  *     description: fetch KYC-img and userID
  *     tags:
@@ -104,7 +104,7 @@ function showOwnerKYCImg(req, res) {
 
 /**
  * @swagger
- * /admin/dashboard/KYC-verify/confirm/{userID}:
+ * /admin/dashboard/kyc-verify/confirm/{userID}:
  *   get:
  *     description: activate user with KYC authentication
  *     tags:
@@ -136,7 +136,7 @@ function activateKYC(req, res) {
 
 /**
  * @swagger
- * /admin/dashboard/KYC-verify/del-img-all:
+ * /admin/dashboard/kyc-verify/del-img-all:
  *   delete:
  *     description: Delete all KYC-verified images
  *     tags:

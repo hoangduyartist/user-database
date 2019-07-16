@@ -12,12 +12,13 @@ module.exports = {
     activateKYC,
     sendCodeToEmail,
     setNewPass,
+    fetchProfile,
     updateProfile
 };
 
 async function authenticate({ username, password }) {
 
-    let hideProp = {code: false, codeID: false, codeExpire: false}
+    let hideProp = { code: false, codeID: false, codeExpire: false }
     const user = await User.findOne({ username }, hideProp)
     if (!user)
         return ({ status: 0, message: 'Username is not correct!' })
@@ -82,16 +83,15 @@ async function reSendEmail(email) {
     if (user) {
         if (user.isVerified == true)
             return ({ status: 0, message: "Your account is already activated." })
-
         // let content = `Hi there, please verify email to active your account. Click link below\nhttp:\/\/${config.HOST}:${config.PORT}\/web-api\/user\/confirmation\/verify-email.${user._id}\n`;
         let content = `Hi there, please verify email to active your account. Click link below\nhttp:\/\/localhost:4200\/verify-account-email\/${user._id}\n`;
-        let sendEmail = await config.sendEmail(email, content);
+        let sendEmail = await config.sendEmail(user, content)
         if (sendEmail)
-            return ({ status: 1, message: "Email resent", email: 'Email sent: ' + sendMail.info });
+            return ({ status: 1, message: "Email resent", email: 'Email sent: ' + sendEmail.response });
+
     }
     return ({ status: 0, message: "User not found" })
     // throw new Error('Not found user');
-
 }
 
 async function activeAccount({ userID }) {
@@ -109,11 +109,11 @@ async function activeAccount({ userID }) {
 
 }
 
-async function activateKYC(userID){
-    const KYCuser = await User.findByIdAndUpdate(userID, {isKYCVerified: true})
+async function activateKYC(userID) {
+    const KYCuser = await User.findByIdAndUpdate(userID, { isKYCVerified: true })
 
-    if(KYCuser)
-    return { status: 1, message: "Activate KYC verify successful for user "+KYCuser.username }
+    if (KYCuser)
+        return { status: 1, message: "Activate KYC verify successful for user " + KYCuser.username }
 
     return ({ status: 0, message: "Activate KYC verify failed or error occurred" })
 }
@@ -147,25 +147,33 @@ async function sendCodeToEmail(email) {
 
 async function setNewPass(codeInput, newPass, codeID) {
 
-        usercode = await User.findOne({ codeID, codeExpire: { $gt: Date.now() } })
-        if (!usercode)
-            return { status: 0, message: "Your code is expired" }
+    usercode = await User.findOne({ codeID, codeExpire: { $gt: Date.now() } })
+    if (!usercode)
+        return { status: 0, message: "Your code is expired" }
 
-        if (codeInput == usercode.code) {
-            let expire = {
-                password: bcrypt.hashSync(newPass, 10),
-                code: null,
-                codeID: null,
-                codeExpire: null
-            }
-            const user = await User.findOneAndUpdate({ email: usercode.email }, expire);
-            if (user)
-                return { status: 1, message: `Set new password successful` }
+    if (codeInput == usercode.code) {
+        let expire = {
+            password: bcrypt.hashSync(newPass, 10),
+            code: null,
+            codeID: null,
+            codeExpire: null
         }
-        return { status: 0, message: "Your code is wrong or expired" }
+        const user = await User.findOneAndUpdate({ email: usercode.email }, expire);
+        if (user)
+            return { status: 1, message: `Set new password successful` }
+    }
+    return { status: 0, message: "Your code is wrong or expired" }
 
 }
 //end forgot pass
+
+async function fetchProfile(userID) {
+    const profile = await User.findById(userID)
+    if (profile)
+        return { status: 1, message: "Fetch profile successful", data: profile }
+
+    return { status: 0, message: "Fetch profile failed or Error occured" }
+}
 
 async function updateProfile(userID, profile) {
     const newInfo = await User.findByIdAndUpdate(userID, { profile: profile }, { new: true })

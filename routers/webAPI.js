@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const jwt = require("jsonwebtoken");
-
 let userController = require('./../controllers/userController');
 let itemController = require('./../controllers/itemController');
 let adminController = require('./../controllers/adminController');
 let swaggerController = require('./../controllers/swaggerController');
 let config = require('./../configs/config');
+
+const jwt = require("jsonwebtoken");
 
 async function checkToken(req,res,next){
     let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
@@ -33,6 +33,8 @@ async function checkToken(req,res,next){
     
 }
 
+
+
 //swagger
 router.use('/docs',swaggerController.swaggerUI.serve,swaggerController.swaggerUI.setup(swaggerController.swaggerSpec));
 router.get('/json',swaggerController.getJson)
@@ -41,11 +43,20 @@ router.get('/json',swaggerController.getJson)
 router.post('/user/new', userController.createNew);
 router.post('/user/login',userController.authenticate);
 router.post('/user/forgotpassword',userController.getCode);
-router.put('/user/forgotpassword.newpassword',userController.setNewPass);
-router.get('/user/confirmation/verify-email.:userID',userController.active);
+router.put('/user/forgotpassword/newpassword',userController.setNewPass);
+router.get('/user/confirmation/verify-email/:userID',userController.active);
 router.post('/user/confirmation/verify-email/resend-email',userController.reactive)
-router.post('/user/KYC-upload-img', checkToken, userController.KYCVerify);
-router.put('/user/update-profile/:userID', userController.updateProfile);
+router.post('/user/kyc-upload-img', checkToken, userController.KYCVerify);
+router.get('/user/me/profile', checkToken, userController.fetchProfile);
+router.put('/user/me/update-profile', checkToken, userController.updateProfile);
+
+//admin
+// router.get('/admin/dashboard',checkToken,adminController.dashBoard);
+router.get('/admin/dashboard/kyc-verify', checkToken, adminController.showKYCImg)
+router.get('/admin/dashboard/kyc-verify/:userID', checkToken, adminController.showOwnerKYCImg);
+router.get('/admin/dashboard/kyc-verify/confirm/:userID', checkToken, adminController.activateKYC);
+router.delete('/admin/dashboard/kyc-verify/del-img-all', checkToken, adminController.delAllKYCImg);
+//end admin
 
 //test
 router.get('/test',itemController.fetchTest);
@@ -56,11 +67,4 @@ router.delete('/test/delete-all', checkToken, itemController.deleteAll);
 router.get('/mainpagetest',checkToken,itemController.protectRouter);
 // test
 
-//admin
-// router.get('/admin/dashboard',checkToken,adminController.dashBoard);
-router.get('/admin/dashboard/KYC-verify/', checkToken, adminController.showKYCImg)
-router.get('/admin/dashboard/KYC-verify/:userID',checkToken, adminController.showOwnerKYCImg);
-router.get('/admin/dashboard/KYC-verify/confirm/:userID', checkToken, adminController.activateKYC);
-router.delete('/admin/dashboard/KYC-verify/del-img-all',checkToken,adminController.delAllKYCImg);
-//end admin
 module.exports = router;

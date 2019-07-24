@@ -83,7 +83,6 @@ function checkFileType(file, cb) {
  */
 function createNew(req, res) {
     let newUser = {
-
         _id: new mongoose.Types.ObjectId(),
         username: req.body.username,
         email: req.body.email,

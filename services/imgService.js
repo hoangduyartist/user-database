@@ -5,6 +5,7 @@ module.exports = {
     create,
     showKYCImg,
     showOwnerKYCImg,
+    delKYCImgWithOwner,
     delAllKYCImg
 }
 
@@ -20,32 +21,42 @@ async function create(images) {
 
     if (saveImages) {
 
-        return { statusCode: 1, message: "Upload successful", quantity };
+        return { status: 1, message: "Upload successful", quantity };
     }
 
-    return { statusCode: 0, message: "Upload failed" };
+    return { status: 0, message: "Upload failed" };
 
 }
 
 async function showKYCImg(){
     const userList = await User.find({isKYCVerified: false}, {_id: true, profile: true, isKYCVerified: true})
     if(userList)
-    return { statusCode: 1, message: "All non-KYC-verify user", data: userList };
+    return { status: 1, message: "All non-KYC-verify user", data: userList };
+
+    return { status: 0, message: "Empty" };
 } 
 
 async function showOwnerKYCImg(userID) {
-    const img = await Image.findOne({ userID });
+    const img = await Image.find({isKYCVerified: false, userID });
 
     if (img)
-        return { statusCode: 1, message: "Fetch KYC-img successful", data: img }
+        return { status: 1, message: "Fetch KYC-img successful", data: img }
 
-    return { statusCode: 0, message: "Img not found or error occured " }
+    return { status: 0, message: "Img not found or error occured " }
+}
+
+async function delKYCImgWithOwner(userID) {
+    const allImg = await Image.remove({userID});
+    if (allImg) {
+        return { status: 1, message: "Delete all KYC image of user "+userID+" successful" }
+    }
+    return { status: 0, message: "Error occurred" }
 }
 
 async function delAllKYCImg() {
     const allImg = await Image.remove({});
     if (allImg) {
-        return { statusCode: 1, message: "Delete all KYC image successful" }
+        return { status: 1, message: "Delete all KYC image successful" }
     }
-    return { statusCode: 0, message: "Error occurred" }
+    return { status: 0, message: "Error occurred" }
 }

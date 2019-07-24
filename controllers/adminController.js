@@ -134,6 +134,10 @@ function activateKYC(req, res) {
         .catch(error => res.send(error))
 }
 
+function delKYCImgWithOwner(req,res){
+    
+}
+
 /**
  * @swagger
  * /admin/dashboard/kyc-verify/del-img-all:

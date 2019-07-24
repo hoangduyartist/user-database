@@ -81,10 +81,7 @@ server.listen(PORT, () => {
 let urlMongo = process.env.MONGODB_URI || "mongodb+srv://hoangduy:hoangduy@cluster0-a0ada.mongodb.net/trainingDB?retryWrites=true";
 mongoose.Promise = global.Promise;
 mongoose.set('useFindAndModify', false);
-mongoose.connect(urlMongo, { useNewUrlParser: true }).then(
-    (rs) => {
-        console.log('connect DataBase MongGo OK');
-    }
-)
-    .catch(connectError => connectError);
+mongoose.connect(urlMongo, { useNewUrlParser: true })
+    .then(connectResults => console.log('connect DataBase MongGo OK'))
+    .catch(connectError => console.log(connectError))
 

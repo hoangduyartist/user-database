@@ -37,8 +37,8 @@ async function showKYCImg(){
 } 
 
 async function showOwnerKYCImg(userID) {
-    const img = await Image.find({isKYCVerified: false, userID });
-
+    const img = await Image.find({ userID });
+    console.log(userID)
     if (img)
         return { status: 1, message: "Fetch KYC-img successful", data: img }
 

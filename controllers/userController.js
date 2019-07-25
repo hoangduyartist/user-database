@@ -13,6 +13,7 @@ module.exports = {
     KYCVerify,
     getCode,
     setNewPass,
+    KYCFetchWithID,
     fetchProfile,
     updateProfile
 };
@@ -336,6 +337,35 @@ function KYCVerify(req, res, next) {
             }
         }
     });
+
+}
+/**
+ * @swagger
+ * /user/kyc-verify/fetch-with-id:
+ *   get:
+ *     description: check user is KYC-verified
+ *     tags:
+ *       - user
+ *     produces:
+ *       - application/json
+ *     consumes:
+ *       - multipart/form-data     
+ *     parameters:
+ *       - name: Authorization
+ *         description: your session
+ *         in: header
+ *         type: string 
+ *     responses:
+ *       200:
+ *         description: (status:1) Successful
+ *       203:
+ *         description: (status:0) Non-authoritative Information
+ */
+function KYCFetchWithID(req,res){
+
+    userService.KYCFetchWithID(req.decoded.userID)
+    .then(data => res.send(data))
+    .catch(err => res.send({ status: 0, message: err }))
 
 }
 

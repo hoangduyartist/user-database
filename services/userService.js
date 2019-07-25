@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
+const Image = require('../models/image');
 let config = require('./../configs/config');
 
 module.exports = {
@@ -12,6 +13,7 @@ module.exports = {
     activateKYC,
     sendCodeToEmail,
     setNewPass,
+    KYCFetchWithID,
     fetchProfile,
     updateProfile
 };
@@ -167,6 +169,26 @@ async function setNewPass(codeInput, newPass, codeID) {
 }
 //end forgot pass
 
+async function KYCFetchWithID(userID) {
+    const isKYCUser = await User.findById(userID, { isVerified: true, isKYCVerified: true })
+    if (isKYCUser) {
+        const imgQuantity = await Image.find({ userID })
+
+        if (isKYCUser.isKYCVerified)
+            return { status: 1, message: `KYC-verify successful` }
+
+        if (imgQuantity.length != 2 && imgQuantity.length > 0)
+            return { status: 0, message: `Not enought image` }
+
+        if (imgQuantity.length == 0)
+            return { status: 0, message: `Your images haven't been uploaded` }
+
+        return { status: 1, message: `Your KYC-img are pending.. ` }
+
+    }
+    return { status: 0, message: `Error occured` }
+
+}
 async function fetchProfile(userID) {
     const profile = await User.findById(userID)
     if (profile)

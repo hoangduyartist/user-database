@@ -1,15 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 
-const adminService = require('./../services/adminService');
 const imgService = require('./../services/imgService');
 const userService = require('./../services/userService');
+
+const Image = require('./../models/image');
 
 module.exports = {
     // dashBoard,
     showKYCImg,
     showOwnerKYCImg,
     activateKYC,
+    delKYCImgWithOwner,
     delAllKYCImg
 }
 
@@ -134,8 +136,52 @@ function activateKYC(req, res) {
         .catch(error => res.send(error))
 }
 
+function delMultiImg(images){
+    // if (images.length == 0) return res.send({ status: 0, message: "Not found images in server" });
+    images.map((img, key)=>{
+
+        fs.stat(`./public/${img.path}`, function(err){
+            if(err){
+                return console.error(err);
+            }
+            fs.unlinkSync(`./public/${img.path}`)
+        })
+    })
+
+}
+
+/**
+ * @swagger
+ * /admin/dashboard/kyc-verify/reject/{userID}:
+ *   delete:
+ *     description: Delete KYC-verified images
+ *     tags:
+ *       - admin
+ *     produces:
+ *       - application/json
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: Authorization
+ *         in: header
+ *       - name: userID
+ *         in: path
+ *         require: true   
+ *     responses:
+ *       200:
+ *         description: Delete image successful
+ *       401: 
+ *         description: Unauthorize 
+ */
 function delKYCImgWithOwner(req,res){
-    
+    imgService.findByUserID(req.params.userID)
+    .then(data => {
+        delMultiImg(data);
+        imgService.delKYCImgWithOwner(req.params.userID)
+        .then(data => res.send(data))
+        .catch(error => res.send(error))
+
+    })
 }
 
 /**
@@ -165,13 +211,13 @@ function delAllKYCImg(req, res) {
     const directory = './public/uploads';
 
     fs.readdir(directory, (err, files) => {
-        if (err) return res.status(500).send({ statusCode: 0, message: "Error occurred" });
+        if (err) return res.status(500).send({ status: 0, message: "Error occurred" });
 
-        if (files.length == 0) return res.send({ statusCode: 0, message: "All images are deleted" });
+        if (files.length == 0) return res.send({ status: 0, message: "All images in server are deleted" });
 
         for (const file of files) {
             fs.unlink(path.join(directory, file), err => {
-                if (err) return res.status(500).send({ statusCode: 0, message: "Error occurred" });
+                if (err) return res.status(500).send({ status: 0, message: "Error occurred" });
 
                 imgService.delAllKYCImg()
                     .then(data => res.send(data))

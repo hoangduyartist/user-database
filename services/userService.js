@@ -181,7 +181,7 @@ async function KYCFetchWithID(userID) {
             return { status: 0, message: `Not enought image` }
 
         if (imgQuantity.length == 0)
-            return { status: 0, message: `Your images haven't been uploaded` }
+            return { status: 0, message: `You haven't uploaded your ID images or your previous uploaded images have been rejected by the admin` }
 
         return { status: 1, message: `Your KYC-img are pending.. ` }
 

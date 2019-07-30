@@ -20,7 +20,7 @@ app.use(bodyParser.json()); //using bodypaser as middleWave
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(favicon())
 //logger
-app.use(morgan('combined', { stream: winston.stream }));
+// app.use(morgan('combined', { stream: winston.stream }));
 //
 
 app.use('/web-api', webAPI);

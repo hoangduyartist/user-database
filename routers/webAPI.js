@@ -28,6 +28,7 @@ router.put('/user/me/update-profile', middleWare.checkToken, userController.upda
 router.get('/admin/dashboard/kyc-verify', middleWare.checkToken, adminController.showKYCImg)
 router.get('/admin/dashboard/kyc-verify/:userID', middleWare.checkToken, adminController.showOwnerKYCImg);
 router.get('/admin/dashboard/kyc-verify/confirm/:userID', middleWare.checkToken, adminController.activateKYC);
+router.delete('/admin/dashboard/kyc-verify/reject/:userID', middleWare.checkToken, adminController.delKYCImgWithOwner);
 router.delete('/admin/dashboard/kyc-verify/del-img-all', middleWare.checkToken, adminController.delAllKYCImg);
 //end admin
 

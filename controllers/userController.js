@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
     destination: './public/uploads/',
     filename: function (req, file, cb) {
         //   fieldname is name of input on client //myImage  
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+        cb(null, 'kycImage' + '-' + mongoose.Types.ObjectId() + path.extname(file.originalname));
     }
 });
 // Init Upload
@@ -306,15 +306,20 @@ function setNewPass(req, res) {
 function KYCVerify(req, res, next) {
 
     upload(req, res, (err) => {
-        // console.log(path);
+        // console.log(req.files);
+        // if (err instanceof multer.MulterError){
+        //     return res.status(406).send(err);
+        // }
+        // else 
         if (err) {
-            next(new Error(err))
-            // return res.status(406).send(err);
+            // next(new Error(err))
+            return res.status(406).send(err);
         } else {
             let userUpload = req.decoded.userID;
-            if (!(req.files && req.files.myImage)) {
+            if (!( req.files.myImage)) {
                 return res.status(404).send({ statusCode: 0, messge: 'Error: No File Selected!' });
-            } else {
+            }else {
+
                 let KYCimg = [];
                 req.files.myImage.map((img, key) => {
                     let newImg = {

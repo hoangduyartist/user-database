@@ -2,12 +2,18 @@ let Image = require("./../models/image");
 let User = require("./../models/user");
 
 module.exports = {
+    findByUserID,
     create,
     showKYCImg,
     showOwnerKYCImg,
     delKYCImgWithOwner,
     delAllKYCImg
 }
+
+async function findByUserID(userID){
+    return await Image.find({userID})
+}
+
 
 async function create(images) {
 
@@ -30,15 +36,25 @@ async function create(images) {
 
 async function showKYCImg(){
     const userList = await User.find({isKYCVerified: false}, {_id: true, profile: true, isKYCVerified: true})
-    if(userList)
-    return { status: 1, message: "All non-KYC-verify user", data: userList };
+
+    if(userList && userList.length>0){
+        let usrList = []
+        await Promise.all( userList.map(async user => {
+            const uploaded = await Image.find({userID: user._id})
+            if(uploaded.length>0){
+                usrList.push(user);
+            }
+        }) )
+        return { status: 1, message: "All non-KYC-verify user", data: usrList };
+    }
+    
 
     return { status: 0, message: "Empty" };
 } 
 
 async function showOwnerKYCImg(userID) {
     const img = await Image.find({ userID });
-    console.log(userID)
+
     if (img)
         return { status: 1, message: "Fetch KYC-img successful", data: img }
 
@@ -46,8 +62,8 @@ async function showOwnerKYCImg(userID) {
 }
 
 async function delKYCImgWithOwner(userID) {
-    const allImg = await Image.remove({userID});
-    if (allImg) {
+    const img = await Image.remove({userID});
+    if (img) {
         return { status: 1, message: "Delete all KYC image of user "+userID+" successful" }
     }
     return { status: 0, message: "Error occurred" }
